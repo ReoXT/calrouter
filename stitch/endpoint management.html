@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CalRouter - Endpoint Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Roboto+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8e65e2",
+                        "primary-hover": "#7a55c5",
+                        "background-light": "#f1f2f4",
+                        "background-dark": "#0f0f11", // Deep dark background
+                        "surface-dark": "#18181b", // Slightly lighter for cards
+                        "border-dark": "#27272a",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"],
+                        "mono": ["Roboto Mono", "monospace"],
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #18181b; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3f3f46; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #52525b; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased selection:bg-primary/30 selection:text-white">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-64 bg-[#131217] border-r border-[#2e2a37] flex-col justify-between hidden md:flex shrink-0">
+<div class="flex flex-col p-6 gap-8">
+<!-- Logo -->
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center text-white font-bold shadow-lg shadow-primary/20">
+                        C
+                    </div>
+<span class="text-white text-lg font-bold tracking-tight">CalRouter</span>
+</div>
+<!-- Nav Items -->
+<nav class="flex flex-col gap-2">
+<div class="px-3 py-1 mb-2">
+<p class="text-[#52525b] text-xs font-bold uppercase tracking-wider">Platform</p>
+</div>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#a79fb7] hover:bg-[#2e2a37] hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-white transition-colors">dashboard</span>
+<span class="text-sm font-medium">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-[#2e2a37] text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px] text-primary">hub</span>
+<span class="text-sm font-medium">Endpoints</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#a79fb7] hover:bg-[#2e2a37] hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-white transition-colors">history</span>
+<span class="text-sm font-medium">Logs</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#a79fb7] hover:bg-[#2e2a37] hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-white transition-colors">credit_card</span>
+<span class="text-sm font-medium">Billing</span>
+</a>
+</nav>
+</div>
+<!-- User Profile -->
+<div class="p-4 border-t border-[#2e2a37]">
+<button class="flex items-center gap-3 w-full p-2 rounded-lg hover:bg-[#2e2a37] transition-colors text-left">
+<div class="h-8 w-8 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400" data-alt="User avatar gradient"></div>
+<div class="flex flex-col flex-1 min-w-0">
+<p class="text-sm font-medium text-white truncate">Dev Team</p>
+<p class="text-xs text-[#a79fb7] truncate">admin@calrouter.io</p>
+</div>
+<span class="material-symbols-outlined text-[#a79fb7] text-[18px]">unfold_more</span>
+</button>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col h-full overflow-hidden relative">
+<!-- Mobile Header -->
+<header class="md:hidden h-16 border-b border-[#2e2a37] flex items-center justify-between px-4 bg-[#131217] shrink-0">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded bg-primary flex items-center justify-center text-white font-bold text-xs">C</div>
+<span class="text-white font-bold">CalRouter</span>
+</div>
+<button class="text-white p-2">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<div class="flex-1 overflow-y-auto p-4 md:p-8 lg:p-12 scroll-smooth">
+<div class="max-w-7xl mx-auto flex flex-col gap-8">
+<!-- Page Heading -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-[#2e2a37]">
+<div class="flex flex-col gap-2">
+<h1 class="text-white text-3xl md:text-4xl font-bold tracking-tight">Endpoints</h1>
+<p class="text-[#a79fb7] text-base font-normal leading-relaxed max-w-2xl">
+                                Manage your active webhook listeners. Configure enrichment rules and monitor delivery health in real-time.
+                            </p>
+</div>
+<button class="flex shrink-0 items-center justify-center gap-2 rounded-lg h-11 px-5 bg-primary hover:bg-primary-hover text-white text-sm font-bold shadow-lg shadow-primary/25 transition-all active:scale-95">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span>Create Endpoint</span>
+</button>
+</div>
+<!-- Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+<!-- Card 1: Active -->
+<div class="group flex flex-col bg-surface-dark border border-border-dark rounded-xl p-5 shadow-sm hover:shadow-md hover:border-[#3f3f46] transition-all duration-200">
+<div class="flex items-start justify-between mb-4">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<h3 class="text-white text-base font-bold">Production - Stripe</h3>
+<div class="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+</div>
+<span class="text-[#a79fb7] text-xs font-mono">Last active: 2m ago</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-[#2e2a37] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="mb-5">
+<label class="text-[#71717a] text-xs font-semibold uppercase tracking-wider mb-2 block">Webhook URL</label>
+<div class="flex items-stretch bg-[#0f0f11] border border-border-dark rounded-lg group-hover:border-[#3f3f46] transition-colors">
+<div class="flex-1 py-2.5 px-3 font-mono text-sm text-gray-300 truncate select-all">
+                                        https://calrouter.io/h/v1/stripe_prod_88x
+                                    </div>
+<button class="px-3 border-l border-border-dark text-[#a79fb7] hover:text-white hover:bg-[#27272a] rounded-r-lg transition-colors flex items-center justify-center" title="Copy URL">
+<span class="material-symbols-outlined text-[18px]">content_copy</span>
+</button>
+</div>
+</div>
+<div class="mt-auto flex flex-wrap gap-2">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#2e2a37] text-xs font-medium text-purple-200 border border-purple-500/20">
+<span class="material-symbols-outlined text-[14px]">analytics</span>
+                                    UTM Tracking
+                                </span>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#2e2a37] text-xs font-medium text-emerald-200 border border-emerald-500/20">
+<span class="material-symbols-outlined text-[14px]">sync</span>
+                                    CRM Sync
+                                </span>
+</div>
+</div>
+<!-- Card 2: Active -->
+<div class="group flex flex-col bg-surface-dark border border-border-dark rounded-xl p-5 shadow-sm hover:shadow-md hover:border-[#3f3f46] transition-all duration-200">
+<div class="flex items-start justify-between mb-4">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<h3 class="text-white text-base font-bold">Staging - Typeform</h3>
+<div class="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+</div>
+<span class="text-[#a79fb7] text-xs font-mono">Last active: 14h ago</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-[#2e2a37] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="mb-5">
+<label class="text-[#71717a] text-xs font-semibold uppercase tracking-wider mb-2 block">Webhook URL</label>
+<div class="flex items-stretch bg-[#0f0f11] border border-border-dark rounded-lg group-hover:border-[#3f3f46] transition-colors">
+<div class="flex-1 py-2.5 px-3 font-mono text-sm text-gray-300 truncate select-all">
+                                        https://calrouter.io/h/v1/tf_stage_92z
+                                    </div>
+<button class="px-3 border-l border-border-dark text-[#a79fb7] hover:text-white hover:bg-[#27272a] rounded-r-lg transition-colors flex items-center justify-center" title="Copy URL">
+<span class="material-symbols-outlined text-[18px]">content_copy</span>
+</button>
+</div>
+</div>
+<div class="mt-auto flex flex-wrap gap-2">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#2e2a37] text-xs font-medium text-blue-200 border border-blue-500/20">
+<span class="material-symbols-outlined text-[14px]">psychology</span>
+                                    Question Parsing
+                                </span>
+</div>
+</div>
+<!-- Card 3: Inactive -->
+<div class="group flex flex-col bg-surface-dark border border-border-dark rounded-xl p-5 shadow-sm hover:shadow-md hover:border-[#3f3f46] transition-all duration-200 opacity-75 hover:opacity-100">
+<div class="flex items-start justify-between mb-4">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<h3 class="text-white text-base font-bold">Legacy - Calendly</h3>
+<div class="h-2 w-2 rounded-full bg-gray-600"></div>
+</div>
+<span class="text-[#a79fb7] text-xs font-mono">Inactive</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-[#2e2a37] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="mb-5">
+<label class="text-[#71717a] text-xs font-semibold uppercase tracking-wider mb-2 block">Webhook URL</label>
+<div class="flex items-stretch bg-[#0f0f11] border border-border-dark rounded-lg group-hover:border-[#3f3f46] transition-colors">
+<div class="flex-1 py-2.5 px-3 font-mono text-sm text-gray-500 truncate select-all">
+                                        https://calrouter.io/h/v1/cal_leg_001
+                                    </div>
+<button class="px-3 border-l border-border-dark text-[#a79fb7] hover:text-white hover:bg-[#27272a] rounded-r-lg transition-colors flex items-center justify-center" title="Copy URL">
+<span class="material-symbols-outlined text-[18px]">content_copy</span>
+</button>
+</div>
+</div>
+<div class="mt-auto flex flex-wrap gap-2">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#2e2a37] text-xs font-medium text-gray-400 border border-gray-600/20">
+<span class="material-symbols-outlined text-[14px]">pause_circle</span>
+                                    Paused
+                                </span>
+</div>
+</div>
+<!-- Card 4: New / Draft -->
+<div class="group relative flex flex-col justify-center items-center bg-surface-dark border border-dashed border-border-dark rounded-xl p-5 min-h-[220px] hover:border-primary/50 hover:bg-[#2e2a37]/30 transition-all cursor-pointer">
+<div class="h-12 w-12 rounded-full bg-[#2e2a37] flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300 group-hover:bg-primary/20">
+<span class="material-symbols-outlined text-[#a79fb7] group-hover:text-primary transition-colors text-2xl">add_link</span>
+</div>
+<h3 class="text-white text-sm font-bold">Add New Endpoint</h3>
+<p class="text-[#a79fb7] text-xs mt-1 text-center max-w-[200px]">Connect a new source to start enriching data instantly.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
