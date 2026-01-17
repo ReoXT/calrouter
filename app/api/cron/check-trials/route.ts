@@ -4,7 +4,8 @@ import { sendTrialExpiredEmail, sendTrialEndingEmail } from '@/lib/email/notific
 
 /**
  * Cron job to check for expired and expiring trials
- * Runs daily at 2 AM UTC (configured in vercel.json)
+ * Runs daily during the 2 AM UTC hour (configured in vercel.json)
+ * Note: Vercel Hobby plan has hourly accuracy - exact minute is not guaranteed
  *
  * Edge cases handled:
  * - Duplicate executions (idempotent operations)
@@ -16,6 +17,7 @@ import { sendTrialExpiredEmail, sendTrialEndingEmail } from '@/lib/email/notific
  * - Users who upgraded mid-trial
  * - Timezone edge cases
  * - Concurrent cron executions
+ * - Variable execution time within the hour (Vercel Hobby limitation)
  */
 
 // Constants for better maintainability
