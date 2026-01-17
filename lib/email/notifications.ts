@@ -6,6 +6,16 @@
  */
 
 import { Resend } from 'resend';
+import {
+  trialEndingEmailHtml,
+  trialExpiredEmailHtml,
+  paymentFailedEmailHtml,
+  paymentSucceededEmailHtml,
+  subscriptionCancelledEmailHtml,
+  webhookFailureEmailHtml,
+  welcomeEmailHtml,
+  subscriptionUpdatedEmailHtml,
+} from './templates';
 
 // Initialize Resend client
 const resend = process.env.RESEND_API_KEY
@@ -21,12 +31,14 @@ export type EmailNotificationType =
   | 'subscription_cancelled'
   | 'subscription_updated'
   | 'trial_ending'
+  | 'trial_expired'
   | 'payment_succeeded';
 
 interface EmailPayload {
   to: string;
   subject: string;
   body: string;
+  html?: string;
   metadata?: Record<string, any>;
 }
 
@@ -39,6 +51,8 @@ export async function sendPaymentFailedEmail(
   attemptNumber: number
 ): Promise<void> {
   try {
+    const updatePaymentUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/billing`;
+
     const payload: EmailPayload = {
       to: email,
       subject: `Payment Failed - Action Required (Attempt ${attemptNumber}/3)`,
@@ -51,7 +65,7 @@ Attempt: ${attemptNumber} of 3
 Previous failures: ${failureCount}
 
 Please update your payment method to continue using CalRouter Pro:
-${process.env.NEXT_PUBLIC_APP_URL}/dashboard/billing
+${updatePaymentUrl}
 
 ${attemptNumber >= 3 ? 'This is your final notice. Your subscription will be cancelled if payment is not received.' : 'We will automatically retry payment soon.'}
 
@@ -60,6 +74,7 @@ If you believe this is an error, please contact support.
 Best regards,
 CalRouter Team
       `.trim(),
+      html: paymentFailedEmailHtml(attemptNumber, updatePaymentUrl),
       metadata: {
         type: 'payment_failed',
         failureCount,
@@ -86,6 +101,8 @@ export async function sendSubscriptionCancelledEmail(
       ? 'due to multiple failed payment attempts'
       : 'at your request';
 
+    const reactivateUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/billing`;
+
     const payload: EmailPayload = {
       to: email,
       subject: 'Your CalRouter Subscription Has Been Cancelled',
@@ -97,13 +114,14 @@ Your CalRouter Pro subscription has been cancelled ${reasonText}.
 What happens now:
 - Your webhook endpoints have been disabled
 - Your data will be retained for 30 days
-- You can reactivate anytime at: ${process.env.NEXT_PUBLIC_APP_URL}/dashboard/billing
+- You can reactivate anytime at: ${reactivateUrl}
 
 We're sorry to see you go! If there's anything we can do to improve, please let us know.
 
 Best regards,
 CalRouter Team
       `.trim(),
+      html: subscriptionCancelledEmailHtml(reason, reactivateUrl),
       metadata: {
         type: 'subscription_cancelled',
         reason,
@@ -125,6 +143,8 @@ export async function sendSubscriptionUpdatedEmail(
   newPlan: string
 ): Promise<void> {
   try {
+    const billingUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/billing`;
+
     const payload: EmailPayload = {
       to: email,
       subject: 'Your CalRouter Subscription Has Been Updated',
@@ -137,11 +157,12 @@ Previous plan: ${oldPlan}
 New plan: ${newPlan}
 
 Your updated billing will be reflected in your next invoice.
-View details at: ${process.env.NEXT_PUBLIC_APP_URL}/dashboard/billing
+View details at: ${billingUrl}
 
 Best regards,
 CalRouter Team
       `.trim(),
+      html: subscriptionUpdatedEmailHtml(oldPlan, newPlan, billingUrl),
       metadata: {
         type: 'subscription_updated',
         oldPlan,
@@ -164,6 +185,9 @@ export async function sendPaymentSucceededEmail(
   amount: number
 ): Promise<void> {
   try {
+    const dashboardUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`;
+    const setupGuideUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/setup`;
+
     const payload: EmailPayload = {
       to: email,
       subject: 'Welcome to CalRouter Pro! 🎉',
@@ -181,13 +205,14 @@ Your webhooks are now being enriched with:
 ✓ UTM parameter tracking
 ✓ Advanced analytics
 
-Get started: ${process.env.NEXT_PUBLIC_APP_URL}/dashboard/endpoints
+Get started: ${dashboardUrl}/endpoints
 
-Need help? Check out our setup guide: ${process.env.NEXT_PUBLIC_APP_URL}/dashboard/setup
+Need help? Check out our setup guide: ${setupGuideUrl}
 
 Best regards,
 CalRouter Team
       `.trim(),
+      html: paymentSucceededEmailHtml(planType, amount, dashboardUrl, setupGuideUrl),
       metadata: {
         type: 'payment_succeeded',
         planType,
@@ -198,6 +223,96 @@ CalRouter Team
     await sendEmail(payload);
   } catch (error) {
     console.error('Failed to send payment succeeded email:', error);
+  }
+}
+
+/**
+ * Send trial expiry notification
+ */
+export async function sendTrialExpiredEmail(email: string): Promise<void> {
+  try {
+    const upgradeUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/billing`;
+
+    const payload: EmailPayload = {
+      to: email,
+      subject: 'Your CalRouter Trial Has Expired',
+      body: `
+Dear CalRouter User,
+
+Your 14-day free trial has ended.
+
+What happens now:
+- Your webhook endpoints have been disabled
+- Your data will be retained for 30 days
+- You can upgrade anytime to continue using CalRouter
+
+Upgrade to CalRouter Pro for just $29/month:
+${upgradeUrl}
+
+What you'll get:
+✓ Unlimited webhook endpoints
+✓ Automatic reschedule detection
+✓ Custom question parsing
+✓ UTM parameter tracking
+✓ Advanced analytics
+✓ Priority support
+
+We'd love to have you continue using CalRouter!
+
+Best regards,
+CalRouter Team
+      `.trim(),
+      html: trialExpiredEmailHtml(upgradeUrl),
+      metadata: {
+        type: 'trial_expired',
+      },
+    };
+
+    await sendEmail(payload);
+  } catch (error) {
+    console.error('Failed to send trial expired email:', error);
+  }
+}
+
+/**
+ * Send trial ending soon notification (3 days before)
+ */
+export async function sendTrialEndingEmail(email: string, daysLeft: number): Promise<void> {
+  try {
+    const upgradeUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/billing`;
+
+    const payload: EmailPayload = {
+      to: email,
+      subject: `Your CalRouter Trial Ends in ${daysLeft} Days`,
+      body: `
+Dear CalRouter User,
+
+Your CalRouter trial ends in ${daysLeft} days.
+
+Don't lose access to:
+✓ Automatic reschedule detection
+✓ Custom question parsing
+✓ UTM parameter tracking
+✓ Advanced analytics
+
+Upgrade now for just $29/month (or $24/month billed annually):
+${upgradeUrl}
+
+Questions? We're here to help!
+
+Best regards,
+CalRouter Team
+      `.trim(),
+      html: trialEndingEmailHtml(daysLeft, upgradeUrl),
+      metadata: {
+        type: 'trial_ending',
+        daysLeft,
+      },
+    };
+
+    await sendEmail(payload);
+  } catch (error) {
+    console.error('Failed to send trial ending email:', error);
   }
 }
 
@@ -223,6 +338,9 @@ async function sendEmail(payload: EmailPayload): Promise<void> {
       metadata: payload.metadata,
     });
     console.log('📝 Body:', payload.body);
+    if (payload.html) {
+      console.log('📝 HTML: <HTML content available>');
+    }
     return;
   }
 
@@ -233,8 +351,7 @@ async function sendEmail(payload: EmailPayload): Promise<void> {
       to: payload.to,
       subject: payload.subject,
       text: payload.body,
-      // Optional: Add HTML version for better formatting
-      // html: convertToHtml(payload.body),
+      html: payload.html, // Use HTML template if provided
     });
 
     if (error) {
@@ -262,9 +379,113 @@ function isValidEmail(email: string): boolean {
 }
 
 /**
+ * Send webhook failure alert (after 3+ consecutive failures)
+ */
+export async function sendWebhookFailureEmail(
+  email: string,
+  endpointName: string,
+  failureCount: number,
+  lastError: string
+): Promise<void> {
+  try {
+    const logsUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/logs`;
+
+    const payload: EmailPayload = {
+      to: email,
+      subject: `⚠️ Webhook Failures Detected - ${endpointName}`,
+      body: `
+Dear CalRouter User,
+
+Your webhook endpoint "${endpointName}" has experienced ${failureCount} consecutive failures.
+
+Last error: ${lastError}
+
+What to check:
+✓ Is your destination URL correct and accessible?
+✓ Is your webhook service (Zapier/Make/n8n) running?
+✓ Are there any authentication or rate limit issues?
+
+View details and fix: ${logsUrl}
+
+Your endpoint will continue receiving webhooks, but enriched data is not being delivered.
+
+Need help? Contact support or check our troubleshooting guide.
+
+Best regards,
+CalRouter Team
+      `.trim(),
+      html: webhookFailureEmailHtml(endpointName, failureCount, lastError, logsUrl),
+      metadata: {
+        type: 'webhook_failure',
+        endpointName,
+        failureCount,
+      },
+    };
+
+    await sendEmail(payload);
+  } catch (error) {
+    console.error('Failed to send webhook failure email:', error);
+    // Don't throw - email failure shouldn't break webhook processing
+  }
+}
+
+/**
+ * Send welcome email for new users
+ */
+export async function sendWelcomeEmail(email: string, userName?: string): Promise<void> {
+  try {
+    const greeting = userName ? `Dear ${userName}` : 'Dear CalRouter User';
+    const dashboardUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`;
+    const setupGuideUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/setup`;
+
+    const payload: EmailPayload = {
+      to: email,
+      subject: 'Welcome to CalRouter! 🎉',
+      body: `
+${greeting},
+
+Welcome to CalRouter! We're excited to help you enrich your Calendly webhooks.
+
+You have 14 days to try all Pro features:
+✓ Automatic reschedule detection
+✓ Custom question parsing
+✓ UTM parameter tracking
+✓ Advanced analytics
+
+Get started in 3 easy steps:
+
+1. Create your first endpoint
+   ${dashboardUrl}/endpoints
+
+2. Add the webhook URL to Calendly
+   ${setupGuideUrl}
+
+3. Connect your automation tool (Zapier, Make, n8n, etc.)
+
+Need help? Check out our setup guide:
+${setupGuideUrl}
+
+Questions? Just reply to this email - we're here to help!
+
+Best regards,
+CalRouter Team
+      `.trim(),
+      html: welcomeEmailHtml(userName, dashboardUrl, setupGuideUrl),
+      metadata: {
+        type: 'welcome',
+      },
+    };
+
+    await sendEmail(payload);
+  } catch (error) {
+    console.error('Failed to send welcome email:', error);
+  }
+}
+
+/**
  * Send email with validation
  */
-async function sendEmailSafe(type: EmailNotificationType, email: string, data: any): Promise<void> {
+export async function sendEmailSafe(type: EmailNotificationType, email: string, data?: any): Promise<void> {
   if (!isValidEmail(email)) {
     console.error('Invalid email address:', email);
     return;
@@ -282,6 +503,12 @@ async function sendEmailSafe(type: EmailNotificationType, email: string, data: a
       break;
     case 'payment_succeeded':
       await sendPaymentSucceededEmail(email, data.planType, data.amount);
+      break;
+    case 'trial_expired':
+      await sendTrialExpiredEmail(email);
+      break;
+    case 'trial_ending':
+      await sendTrialEndingEmail(email, data.daysLeft);
       break;
     default:
       console.warn('Unknown email notification type:', type);

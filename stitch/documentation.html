@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CalRouter Documentation &amp; FAQ</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8139a2",
+                        "primary-light": "#a85bc9",
+                        "primary-dark": "#5a2472",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#1b141e",
+                        "surface-dark": "#231b26",
+                        "surface-border": "#322c35",
+                        "text-muted": "#aea2b3",
+                        "accent-teal": "#00CBA8",
+                        "accent-blue": "#0086FF",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }details > summary {
+            list-style: none;
+        }
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display overflow-hidden">
+<div class="flex h-screen w-full">
+<aside class="w-72 flex-shrink-0 border-r border-surface-border bg-[#151216] flex flex-col justify-between hidden md:flex h-full">
+<div class="flex flex-col h-full">
+<div class="flex items-center gap-3 px-6 py-5 border-b border-surface-border/50">
+<div class="h-9 w-9 rounded-xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center shadow-lg shadow-primary/20 flex-shrink-0">
+<span class="material-symbols-outlined text-white text-xl">webhook</span>
+</div>
+<div class="flex flex-col">
+<h1 class="text-white text-base font-bold leading-tight tracking-tight">CalRouter</h1>
+<p class="text-text-muted text-[11px] font-normal uppercase tracking-wider">Docs &amp; Support</p>
+</div>
+</div>
+<div class="px-4 py-4">
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-text-muted text-[18px]">search</span>
+<input class="w-full h-9 pl-9 pr-3 rounded-lg border border-surface-border bg-surface-dark text-white text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none placeholder:text-text-muted/70" placeholder="Search documentation..." type="text"/>
+</div>
+</div>
+<nav class="flex-1 overflow-y-auto px-4 py-2 space-y-6 scrollbar-hide">
+<div>
+<h3 class="text-xs font-bold text-text-muted uppercase tracking-wider mb-3 px-2">Getting Started</h3>
+<ul class="space-y-0.5">
+<li>
+<a class="flex items-center gap-2 px-2 py-1.5 rounded-md bg-primary/10 text-primary font-medium text-sm border-l-2 border-primary" href="#">
+<span>Introduction</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-2 px-2 py-1.5 rounded-md text-text-muted hover:text-white hover:bg-surface-border transition-colors text-sm border-l-2 border-transparent" href="#">
+<span>Quick Start Guide</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-2 px-2 py-1.5 rounded-md text-text-muted hover:text-white hover:bg-surface-border transition-colors text-sm border-l-2 border-transparent" href="#">
+<span>Installation</span>
+</a>
+</li>
+</ul>
+</div>
+<div>
+<h3 class="text-xs font-bold text-text-muted uppercase tracking-wider mb-3 px-2">Webhook Routing</h3>
+<ul class="space-y-0.5">
+<li>
+<a class="flex items-center gap-2 px-2 py-1.5 rounded-md text-text-muted hover:text-white hover:bg-surface-border transition-colors text-sm border-l-2 border-transparent" href="#">
+<span>Defining Routes</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-2 px-2 py-1.5 rounded-md text-text-muted hover:text-white hover:bg-surface-border transition-colors text-sm border-l-2 border-transparent" href="#">
+<span>Filtering Logic</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-2 px-2 py-1.5 rounded-md text-text-muted hover:text-white hover:bg-surface-border transition-colors text-sm border-l-2 border-transparent" href="#">
+<span>Retry Policies</span>
+</a>
+</li>
+</ul>
+</div>
+<div>
+<h3 class="text-xs font-bold text-text-muted uppercase tracking-wider mb-3 px-2">Enrichment Rules</h3>
+<ul class="space-y-0.5">
+<li>
+<a class="flex items-center gap-2 px-2 py-1.5 rounded-md text-text-muted hover:text-white hover:bg-surface-border transition-colors text-sm border-l-2 border-transparent" href="#">
+<span>Data Transformation</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-2 px-2 py-1.5 rounded-md text-text-muted hover:text-white hover:bg-surface-border transition-colors text-sm border-l-2 border-transparent" href="#">
+<span>Third-party Integrations</span>
+</a>
+</li>
+</ul>
+</div>
+<div>
+<h3 class="text-xs font-bold text-text-muted uppercase tracking-wider mb-3 px-2">API Reference</h3>
+<ul class="space-y-0.5">
+<li>
+<a class="flex items-center gap-2 px-2 py-1.5 rounded-md text-text-muted hover:text-white hover:bg-surface-border transition-colors text-sm border-l-2 border-transparent" href="#">
+<span>Authentication</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-2 px-2 py-1.5 rounded-md text-text-muted hover:text-white hover:bg-surface-border transition-colors text-sm border-l-2 border-transparent" href="#">
+<span>Endpoints</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-2 px-2 py-1.5 rounded-md text-text-muted hover:text-white hover:bg-surface-border transition-colors text-sm border-l-2 border-transparent" href="#">
+<span>Errors</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<div class="p-4 border-t border-surface-border">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-surface-border text-white hover:bg-surface-border/80 transition-colors w-full justify-center" href="#">
+<span class="material-symbols-outlined text-sm">arrow_back</span>
+<span class="text-sm font-medium">Back to App</span>
+</a>
+</div>
+</div>
+</aside>
+<main class="flex-1 flex flex-col h-full overflow-hidden bg-background-dark relative">
+<header class="h-16 flex-shrink-0 border-b border-surface-border flex items-center justify-between px-8 bg-[#151216]/80 backdrop-blur-md sticky top-0 z-20">
+<nav class="flex text-sm font-medium text-text-muted">
+<ol class="flex items-center space-x-2">
+<li><a class="hover:text-white transition-colors" href="#">Docs</a></li>
+<li><span class="text-surface-border">/</span></li>
+<li><span class="text-white">Help Center</span></li>
+</ol>
+</nav>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-surface-border text-text-muted hover:text-white hover:border-primary/50 transition-colors text-xs font-medium">
+<span class="material-symbols-outlined text-[16px]">bug_report</span>
+<span>Report Issue</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-cover bg-center border border-surface-border" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA9kQkLIHLMO3aQtgDmb0OZvyUS4RK_GKxbNoeYBHZgMZiVmNwFFUFOnfPNALAc_98m2nK60vaFxE2S0LZ12VqgxiE9H-J2AFvm-_l83NJtnQQMAoStek3_z4471SQyrYm0baGtSDpbPl7cszcWqTeS3PpsxetSuMceYgHlZAHYLKzxPcM9xMGN8eDFm5GqpMyhUVnfDYe3Nc46Xd3iASkVeQfY5jFu1B-iOK1l7ES6v-curgQccNKGYmafr7PQXKLoqnoRm7a_zw')"></div>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto p-8 scrollbar-hide">
+<div class="max-w-[1000px] mx-auto flex flex-col gap-10 pb-12">
+<section class="text-center py-8">
+<h1 class="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">Help &amp; Resources</h1>
+<p class="text-lg text-text-muted max-w-2xl mx-auto">Everything you need to configure webhook routing, set up enrichment rules, and integrate CalRouter with your stack.</p>
+</section>
+<section>
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-primary">menu_book</span>
+<h2 class="text-xl font-bold text-white">Popular Guides</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+<a class="group bg-surface-dark border border-surface-border rounded-xl p-6 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all" href="#">
+<div class="h-10 w-10 rounded-lg bg-surface-border flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-text-muted group-hover:text-white transition-colors">rocket_launch</span>
+</div>
+<h3 class="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">Getting Started</h3>
+<p class="text-sm text-text-muted line-clamp-2">Learn the basics of setting up your first webhook endpoint and routing rules in under 5 minutes.</p>
+</a>
+<a class="group bg-surface-dark border border-surface-border rounded-xl p-6 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all" href="#">
+<div class="h-10 w-10 rounded-lg bg-surface-border flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-text-muted group-hover:text-white transition-colors">hub</span>
+</div>
+<h3 class="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">Advanced Routing</h3>
+<p class="text-sm text-text-muted line-clamp-2">Master conditional logic, payload filtering, and dynamic destination mapping for complex workflows.</p>
+</a>
+<a class="group bg-surface-dark border border-surface-border rounded-xl p-6 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all" href="#">
+<div class="h-10 w-10 rounded-lg bg-surface-border flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-text-muted group-hover:text-white transition-colors">security</span>
+</div>
+<h3 class="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">Security &amp; Auth</h3>
+<p class="text-sm text-text-muted line-clamp-2">Secure your endpoints with HMAC signatures, IP whitelisting, and OAuth2 authentication flows.</p>
+</a>
+<a class="group bg-surface-dark border border-surface-border rounded-xl p-6 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all" href="#">
+<div class="h-10 w-10 rounded-lg bg-surface-border flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-text-muted group-hover:text-white transition-colors">monitoring</span>
+</div>
+<h3 class="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">Monitoring Logs</h3>
+<p class="text-sm text-text-muted line-clamp-2">How to use the real-time debugger and interpret error codes to troubleshoot failed deliveries.</p>
+</a>
+<a class="group bg-surface-dark border border-surface-border rounded-xl p-6 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all" href="#">
+<div class="h-10 w-10 rounded-lg bg-surface-border flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-text-muted group-hover:text-white transition-colors">api</span>
+</div>
+<h3 class="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">API Integration</h3>
+<p class="text-sm text-text-muted line-clamp-2">Complete reference documentation for the Management API to automate your router configuration.</p>
+</a>
+<a class="group bg-surface-dark border border-surface-border rounded-xl p-6 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all" href="#">
+<div class="h-10 w-10 rounded-lg bg-surface-border flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-text-muted group-hover:text-white transition-colors">code_blocks</span>
+</div>
+<h3 class="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">Enrichment Rules</h3>
+<p class="text-sm text-text-muted line-clamp-2">Adding data to your payloads from external sources before routing to destinations.</p>
+</a>
+</div>
+</section>
+<section>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">help</span>
+<h2 class="text-xl font-bold text-white">Frequently Asked Questions</h2>
+</div>
+<div class="relative w-full md:w-64">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-text-muted text-[16px]">search</span>
+<input class="w-full h-9 pl-9 pr-3 rounded-lg border border-surface-border bg-surface-dark text-white text-xs focus:border-primary focus:ring-1 focus:ring-primary outline-none placeholder:text-text-muted/70" placeholder="Search FAQs..." type="text"/>
+</div>
+</div>
+<div class="space-y-4">
+<details class="group bg-surface-dark border border-surface-border rounded-xl overflow-hidden [&amp;_summary::-webkit-details-marker]:hidden open:border-primary/30 open:ring-1 open:ring-primary/30 transition-all duration-300">
+<summary class="flex cursor-pointer items-center justify-between p-5 text-white font-medium hover:bg-surface-border/30 transition-colors">
+<span class="flex items-center gap-3">
+<span class="h-6 w-6 rounded bg-surface-border text-primary flex items-center justify-center text-xs font-bold">Q</span>
+                                    How is billable usage calculated?
+                                </span>
+<span class="material-symbols-outlined text-text-muted transition group-open:rotate-180">expand_more</span>
+</summary>
+<div class="px-5 pb-5 text-text-muted text-sm leading-relaxed pl-14">
+                                Usage is calculated based on the number of unique webhook events received by our ingress endpoints. Retries and internal routing steps do not count towards your monthly quota. We offer a generous free tier of 10k events/month.
+                            </div>
+</details>
+<details class="group bg-surface-dark border border-surface-border rounded-xl overflow-hidden [&amp;_summary::-webkit-details-marker]:hidden open:border-primary/30 open:ring-1 open:ring-primary/30 transition-all duration-300">
+<summary class="flex cursor-pointer items-center justify-between p-5 text-white font-medium hover:bg-surface-border/30 transition-colors">
+<span class="flex items-center gap-3">
+<span class="h-6 w-6 rounded bg-surface-border text-primary flex items-center justify-center text-xs font-bold">Q</span>
+                                    Can I use a custom domain for my webhook URLs?
+                                </span>
+<span class="material-symbols-outlined text-text-muted transition group-open:rotate-180">expand_more</span>
+</summary>
+<div class="px-5 pb-5 text-text-muted text-sm leading-relaxed pl-14">
+                                Yes, custom domains (CNAME) are available on the Pro and Enterprise plans. You can configure this in the Settings &gt; Domains section of your dashboard. SSL certificates are automatically managed and renewed by us.
+                            </div>
+</details>
+<details class="group bg-surface-dark border border-surface-border rounded-xl overflow-hidden [&amp;_summary::-webkit-details-marker]:hidden open:border-primary/30 open:ring-1 open:ring-primary/30 transition-all duration-300">
+<summary class="flex cursor-pointer items-center justify-between p-5 text-white font-medium hover:bg-surface-border/30 transition-colors">
+<span class="flex items-center gap-3">
+<span class="h-6 w-6 rounded bg-surface-border text-primary flex items-center justify-center text-xs font-bold">Q</span>
+                                    What is the maximum payload size supported?
+                                </span>
+<span class="material-symbols-outlined text-text-muted transition group-open:rotate-180">expand_more</span>
+</summary>
+<div class="px-5 pb-5 text-text-muted text-sm leading-relaxed pl-14">
+                                The standard maximum payload size is 5MB for JSON bodies. If you need to process larger payloads (up to 25MB), please contact support to enable High Volume processing on your account.
+                            </div>
+</details>
+<details class="group bg-surface-dark border border-surface-border rounded-xl overflow-hidden [&amp;_summary::-webkit-details-marker]:hidden open:border-primary/30 open:ring-1 open:ring-primary/30 transition-all duration-300">
+<summary class="flex cursor-pointer items-center justify-between p-5 text-white font-medium hover:bg-surface-border/30 transition-colors">
+<span class="flex items-center gap-3">
+<span class="h-6 w-6 rounded bg-surface-border text-primary flex items-center justify-center text-xs font-bold">Q</span>
+                                    How long are logs retained?
+                                </span>
+<span class="material-symbols-outlined text-text-muted transition group-open:rotate-180">expand_more</span>
+</summary>
+<div class="px-5 pb-5 text-text-muted text-sm leading-relaxed pl-14">
+                                Log retention varies by plan. Free tier includes 3 days of retention, Starter includes 30 days, and Pro/Enterprise plans include 90 days to 1 year of searchable logs.
+                            </div>
+</details>
+</div>
+</section>
+<section class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+<div class="bg-gradient-to-br from-surface-dark to-[#151216] border border-surface-border rounded-xl p-8 flex flex-col items-center text-center relative overflow-hidden group">
+<div class="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="h-12 w-12 rounded-full bg-surface-border flex items-center justify-center mb-4 z-10">
+<span class="material-symbols-outlined text-white">support_agent</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-2 z-10">Still need help?</h3>
+<p class="text-text-muted text-sm mb-6 max-w-xs z-10">Our support team is available 24/7 to assist with complex routing issues.</p>
+<button class="px-5 py-2.5 bg-primary hover:bg-primary-light text-white rounded-lg font-medium transition-colors text-sm w-full max-w-[200px] z-10 shadow-lg shadow-primary/20">Contact Support</button>
+</div>
+<div class="bg-gradient-to-br from-surface-dark to-[#151216] border border-surface-border rounded-xl p-8 flex flex-col items-center text-center relative overflow-hidden group">
+<div class="absolute inset-0 bg-accent-blue/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="h-12 w-12 rounded-full bg-surface-border flex items-center justify-center mb-4 z-10">
+<span class="material-symbols-outlined text-white">groups</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-2 z-10">Join the Community</h3>
+<p class="text-text-muted text-sm mb-6 max-w-xs z-10">Connect with other developers, share routing recipes, and get tips.</p>
+<button class="px-5 py-2.5 bg-surface-border hover:bg-white hover:text-black text-white border border-surface-border hover:border-white rounded-lg font-medium transition-all text-sm w-full max-w-[200px] z-10">Join Discord</button>
+</div>
+</section>
+<div class="mt-8 pt-8 border-t border-surface-border flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-text-muted">
+<p>© 2024 CalRouter Inc. All rights reserved.</p>
+<div class="flex gap-6">
+<a class="hover:text-white transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-white transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-white transition-colors" href="#">Status</a>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>
