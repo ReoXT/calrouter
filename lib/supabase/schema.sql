@@ -34,7 +34,8 @@ CREATE TABLE webhook_endpoints (
   enable_reschedule_detection BOOLEAN DEFAULT true,
   enable_utm_tracking BOOLEAN DEFAULT true,
   enable_question_parsing BOOLEAN DEFAULT true,
-  created_at TIMESTAMP DEFAULT now()
+  created_at TIMESTAMP DEFAULT now(),
+  deleted_at TIMESTAMP
 );
 
 -- Index for user's endpoints
@@ -45,6 +46,9 @@ CREATE INDEX idx_endpoints_active ON webhook_endpoints(is_active);
 
 -- Combined index for common query pattern
 CREATE INDEX idx_endpoints_user_active ON webhook_endpoints(user_id, is_active);
+
+-- Index for filtering deleted endpoints
+CREATE INDEX idx_endpoints_deleted ON webhook_endpoints(deleted_at);
 
 
 -- ======================
@@ -145,7 +149,7 @@ RETURNS TABLE (
 BEGIN
   RETURN QUERY
   SELECT
-    (SELECT COUNT(*) FROM webhook_endpoints WHERE user_id = p_user_id AND is_active = true) as total_endpoints,
+    (SELECT COUNT(*) FROM webhook_endpoints WHERE user_id = p_user_id AND is_active = true AND deleted_at IS NULL) as total_endpoints,
     (SELECT COUNT(*) FROM webhook_logs wl
      INNER JOIN webhook_endpoints we ON wl.endpoint_id = we.id
      WHERE we.user_id = p_user_id

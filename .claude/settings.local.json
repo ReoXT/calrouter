@@ -8,7 +8,15 @@
       "Bash(npm run build:*)",
       "Bash(npm install:*)",
       "Bash(ngrok version:*)",
-      "Bash(ngrok --version:*)"
+      "Bash(ngrok --version:*)",
+      "Bash(npx shadcn@latest add chart)",
+      "Skill(vercel-react-best-practices)",
+      "Skill(vercel-react-best-practices:*)",
+      "Bash(find:*)",
+      "Bash(npx shadcn@latest add sheet:*)",
+      "Bash(npm run dev:*)",
+      "Skill(web-design-guidelines)",
+      "Skill(web-design-guidelines:*)"
     ]
   }
 }

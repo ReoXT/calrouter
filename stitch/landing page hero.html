@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CalRouter - Webhook Enrichment</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8e65e2",
+                        "primary-hover": "#7a52cc",
+                        "background-light": "#f1f2f4",
+                        "background-dark": "#131217",
+                        "surface-card": "#1c1a21",
+                        "surface-code": "#0f0e12",
+                        "destructive": "#f97316", // Custom orange for errors
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1.25rem",
+                        "2xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    backgroundImage: {
+                        'grid-pattern': "linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px)",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for code blocks */
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+        
+        /* Syntax highlighting classes */
+        .token-key { color: #94a3b8; } /* slate-400 */
+        .token-string { color: #a5f3fc; } /* cyan-200 */
+        .token-bool { color: #fca5a5; } /* red-300 */
+        
+        /* Card specific syntax */
+        .card-bad .token-key { color: #78716c; }
+        .card-bad .token-string { color: #fdba74; } /* orange-300 */
+        
+        .card-good .token-key { color: #c4b5fd; } /* violet-300 */
+        .card-good .token-string { color: #86efac; } /* green-300 */
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col font-display text-slate-900 dark:text-white overflow-x-hidden selection:bg-primary/30 selection:text-white">
+<!-- Navbar -->
+<header class="sticky top-0 z-50 w-full border-b border-white/5 bg-background-dark/80 backdrop-blur-md">
+<div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="flex items-center justify-center size-8 bg-gradient-to-tr from-primary to-purple-400 rounded-lg shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-white text-[20px]">webhook</span>
+</div>
+<span class="text-lg font-bold tracking-tight text-white">CalRouter</span>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium text-slate-400 hover:text-white transition-colors" href="#">Docs</a>
+<a class="text-sm font-medium text-slate-400 hover:text-white transition-colors" href="#">Integrations</a>
+<a class="text-sm font-medium text-slate-400 hover:text-white transition-colors" href="#">Pricing</a>
+</nav>
+<div class="flex items-center gap-4">
+<a class="hidden sm:block text-sm font-bold text-white hover:text-primary transition-colors" href="#">Login</a>
+<button class="bg-white/10 hover:bg-white/20 text-white text-sm font-bold py-2 px-4 rounded-lg transition-all border border-white/5">
+                    Start Free
+                </button>
+</div>
+</div>
+</header>
+<main class="flex-grow flex flex-col">
+<!-- Hero Section -->
+<section class="relative pt-20 pb-16 md:pt-32 md:pb-24 px-6 overflow-hidden">
+<!-- Background Grids & Glows -->
+<div class="absolute inset-0 bg-grid-pattern bg-[length:40px_40px] opacity-20 pointer-events-none"></div>
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[120px] pointer-events-none mix-blend-screen"></div>
+<div class="max-w-4xl mx-auto text-center relative z-10 flex flex-col items-center">
+<!-- Badge -->
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider mb-8">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+                    v2.0 Now Available
+                </div>
+<h1 class="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] mb-6 text-white drop-shadow-sm">
+                    Stop wasting time parsing <br class="hidden md:block"/>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-300">Calendly webhooks</span>
+</h1>
+<p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+                    Instantly turn nested, messy payloads into flat, enriched JSON ready for your database. No more regex nightmares or missing attendee data.
+                </p>
+<div class="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
+<button class="w-full sm:w-auto h-12 px-8 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-base transition-all shadow-[0_0_20px_-5px_rgba(142,101,226,0.5)] flex items-center justify-center gap-2 group">
+                        Start Free Trial
+                        <span class="material-symbols-outlined text-[18px] group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+</button>
+<button class="w-full sm:w-auto h-12 px-8 bg-surface-card hover:bg-white/5 border border-white/10 text-white rounded-xl font-bold text-base transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-slate-400">play_circle</span>
+                        See How It Works
+                    </button>
+</div>
+<div class="mt-8 flex items-center gap-4 text-xs text-slate-500 font-mono">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-primary">check</span>
+<span>SOC2 Compliant</span>
+</div>
+<div class="w-1 h-1 bg-slate-700 rounded-full"></div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-primary">check</span>
+<span>99.9% Uptime</span>
+</div>
+<div class="w-1 h-1 bg-slate-700 rounded-full"></div>
+<div>Used by 1,000+ devs</div>
+</div>
+</div>
+</section>
+<!-- Feature Comparison Section -->
+<section class="px-4 pb-24">
+<div class="max-w-6xl mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+<!-- LEFT CARD: The Problem -->
+<div class="relative group rounded-2xl bg-surface-card border border-white/5 p-6 md:p-8 flex flex-col gap-6 overflow-hidden">
+<!-- Top Label -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-lg bg-destructive/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-destructive text-[20px]">warning</span>
+</div>
+<div>
+<h3 class="text-white font-bold text-lg">The Hard Way</h3>
+<p class="text-xs text-slate-500 font-mono">Raw Webhook</p>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] font-bold text-slate-400 uppercase tracking-wide">
+                                Before
+                            </span>
+</div>
+<!-- Code Block (Messy) -->
+<div class="bg-surface-code rounded-lg border border-white/5 p-4 font-mono text-xs md:text-sm leading-6 overflow-x-auto custom-scrollbar card-bad relative">
+<div class="absolute top-2 right-2 flex gap-1.5">
+<div class="w-2.5 h-2.5 rounded-full bg-slate-700"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-slate-700"></div>
+</div>
+<pre><code class="language-json">
+<span class="token-key">"payload"</span>: {
+  <span class="text-slate-600">// ❌ Inconsistent nesting depth</span>
+  <span class="token-key">"event"</span>: <span class="token-string">"invitee.created"</span>,
+  <span class="token-key">"tracking"</span>: {
+    <span class="token-key">"utm_campaign"</span>: <span class="token-string">null</span>
+  },
+  <span class="token-key">"questions_and_answers"</span>: [
+    <span class="text-slate-600">// ❌ Array requires iteration</span>
+    {
+      <span class="token-key">"question"</span>: <span class="token-string">"Phone Number"</span>,
+      <span class="token-key">"answer"</span>: <span class="token-string">"+15550192834"</span>
+    },
+    {
+      <span class="token-key">"question"</span>: <span class="token-string">"CRM ID"</span>, 
+      <span class="token-key">"answer"</span>: <span class="text-destructive font-bold">MISSING</span>
+    }
+  ]
+}</code></pre>
+</div>
+<!-- Pain Points -->
+<ul class="flex flex-col gap-3 mt-auto border-t border-white/5 pt-6">
+<li class="flex items-start gap-3 text-sm text-slate-400">
+<span class="material-symbols-outlined text-[18px] text-destructive shrink-0 mt-0.5">close</span>
+<span>Manually parsing nested JSON arrays</span>
+</li>
+<li class="flex items-start gap-3 text-sm text-slate-400">
+<span class="material-symbols-outlined text-[18px] text-destructive shrink-0 mt-0.5">close</span>
+<span>Writing Regex to extract phone numbers</span>
+</li>
+<li class="flex items-start gap-3 text-sm text-slate-400">
+<span class="material-symbols-outlined text-[18px] text-destructive shrink-0 mt-0.5">close</span>
+<span>Fragile code that breaks on API updates</span>
+</li>
+</ul>
+</div>
+<!-- RIGHT CARD: The Solution -->
+<div class="relative group rounded-2xl bg-surface-card border border-primary/40 p-6 md:p-8 flex flex-col gap-6 overflow-hidden shadow-2xl shadow-primary/5">
+<!-- Glow Effect -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[80px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
+<!-- Top Label -->
+<div class="flex items-center justify-between relative z-10">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-white text-[20px]">auto_fix_high</span>
+</div>
+<div>
+<h3 class="text-white font-bold text-lg">With CalRouter</h3>
+<p class="text-xs text-primary/80 font-mono">Enriched Payload</p>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-[10px] font-bold text-primary-300 uppercase tracking-wide">
+                                Automated
+                            </span>
+</div>
+<!-- Code Block (Clean) -->
+<div class="bg-[#131118] rounded-lg border border-primary/20 p-4 font-mono text-xs md:text-sm leading-6 overflow-x-auto custom-scrollbar card-good relative z-10 shadow-inner">
+<div class="absolute top-2 right-2 flex gap-1.5">
+<div class="w-2.5 h-2.5 rounded-full bg-primary/40"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-primary/20"></div>
+</div>
+<pre><code class="language-json">
+{
+  <span class="text-slate-500">// ✅ Flat, normalized schema</span>
+  <span class="token-key">"event_type"</span>: <span class="token-string">"sales_demo"</span>,
+  <span class="token-key">"status"</span>: <span class="token-string">"confirmed"</span>,
+  
+  <span class="token-key">"attendee"</span>: {
+    <span class="token-key">"name"</span>: <span class="token-string">"Alex Dev"</span>,
+    <span class="token-key">"email"</span>: <span class="token-string">"alex@example.com"</span>,
+    <span class="token-key">"phone"</span>: <span class="token-string">"+15550192834"</span>,
+    <span class="token-key">"company"</span>: <span class="token-string">"TechCorp Inc."</span>
+  },
+  
+  <span class="token-key">"crm_context"</span>: {
+    <span class="text-slate-500">// ✨ Auto-enriched from your DB</span>
+    <span class="token-key">"plan"</span>: <span class="token-string">"enterprise"</span>,
+    <span class="token-key">"mrr"</span>: <span class="token-string">"$2,400"</span>
+  }
+}</code></pre>
+</div>
+<!-- Benefits -->
+<ul class="flex flex-col gap-3 mt-auto border-t border-white/5 pt-6 relative z-10">
+<li class="flex items-start gap-3 text-sm text-white font-medium">
+<span class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">check_circle</span>
+<span>Zero parsing logic required in your app</span>
+</li>
+<li class="flex items-start gap-3 text-sm text-white font-medium">
+<span class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">check_circle</span>
+<span>Auto-format phone numbers to E.164</span>
+</li>
+<li class="flex items-start gap-3 text-sm text-white font-medium">
+<span class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">check_circle</span>
+<span>Direct SQL/NoSQL insertion ready</span>
+</li>
+</ul>
+</div>
+</div>
+<!-- Trust Footer -->
+<div class="mt-16 text-center border-t border-white/5 pt-8">
+<p class="text-sm text-slate-500 mb-6">Trusted by engineering teams at</p>
+<div class="flex flex-wrap justify-center gap-8 md:gap-16 opacity-40 grayscale hover:grayscale-0 transition-all duration-500">
+<div class="flex items-center gap-2">
+<div class="h-6 w-6 bg-slate-400 rounded-sm" data-alt="Acme Corp logo placeholder"></div>
+<span class="font-bold text-slate-300">ACME</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="h-6 w-6 bg-slate-400 rounded-full" data-alt="Globex logo placeholder"></div>
+<span class="font-bold text-slate-300">Globex</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="h-6 w-6 bg-slate-400 transform rotate-45" data-alt="Soylent Corp logo placeholder"></div>
+<span class="font-bold text-slate-300">Soylent</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="h-6 w-6 bg-slate-400 rounded-lg" data-alt="Umbrella Corp logo placeholder"></div>
+<span class="font-bold text-slate-300">Umbrella</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+</body></html>

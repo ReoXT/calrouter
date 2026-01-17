@@ -1,22 +1,28 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import {
-  Webhook,
-  ArrowRight,
-  Check,
-  X,
-  Filter,
-  Calendar,
-  ListChecks,
-  Target,
-  Link2,
-  Settings,
-  Zap,
-} from "lucide-react";
+// OPTIMIZATION: Direct icon imports to reduce bundle size (avoid barrel imports)
+import Webhook from "lucide-react/dist/esm/icons/webhook";
+import ArrowRight from "lucide-react/dist/esm/icons/arrow-right";
+import Check from "lucide-react/dist/esm/icons/check";
+import X from "lucide-react/dist/esm/icons/x";
+import Filter from "lucide-react/dist/esm/icons/filter";
+import Calendar from "lucide-react/dist/esm/icons/calendar";
+import ListChecks from "lucide-react/dist/esm/icons/list-checks";
+import Target from "lucide-react/dist/esm/icons/target";
+import Link2 from "lucide-react/dist/esm/icons/link-2";
+import Settings from "lucide-react/dist/esm/icons/settings";
+import Zap from "lucide-react/dist/esm/icons/zap";
 import { PricingSection } from "@/components/pricing-section";
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+
+// Lazy load PricingSection for better initial load
+const LazyPricingSection = dynamic(() => import('@/components/pricing-section').then(mod => ({ default: mod.PricingSection })), {
+  loading: () => <div className="min-h-[400px] animate-pulse bg-muted/20" />,
+  ssr: true,
+});
 
 export default function Page() {
   return (
@@ -593,7 +599,7 @@ export default function Page() {
       </section>
 
       {/* ===== PRICING SECTION ===== */}
-      <PricingSection />
+      <LazyPricingSection />
     </div>
   );
 }

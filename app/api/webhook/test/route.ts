@@ -95,52 +95,77 @@ function generateMockCalendlyPayload(eventType: string) {
   const timestamp = new Date().toISOString();
   const eventUuid = `test-${crypto.randomUUID()}`;
 
-  const basePayload = {
-    event: eventType,
+  interface BasePayload {
+    event: string;
+    invitee: string;
+    name: string;
+    email: string;
+    text_reminder_number: null;
+    timezone: string;
+    created_at: string;
+    updated_at: string;
+    questions_and_answers: Array<{ question: string; answer: string }>;
+    tracking: {
+      utm_source?: string;
+      utm_medium?: string;
+      utm_campaign?: string;
+      utm_term?: string;
+      utm_content?: string;
+    };
+    cancel_url: string;
+    reschedule_url: string;
+    // Optional fields for cancellation
+    canceled_at?: string;
+    canceler_name?: string;
+    cancel_reason?: string;
+  }
+
+  const payload: BasePayload = {
+    event: `https://api.calendly.com/scheduled_events/${eventUuid}`,
+    invitee: `https://api.calendly.com/scheduled_events/${eventUuid}/invitees/test-invitee-uuid`,
+    name: 'Test User',
+    email: 'test@example.com',
+    text_reminder_number: null,
+    timezone: 'America/New_York',
     created_at: timestamp,
-    payload: {
-      event: `https://api.calendly.com/scheduled_events/${eventUuid}`,
-      invitee: `https://api.calendly.com/scheduled_events/${eventUuid}/invitees/test-invitee-uuid`,
-      name: 'Test User',
-      email: 'test@example.com',
-      text_reminder_number: null,
-      timezone: 'America/New_York',
-      created_at: timestamp,
-      updated_at: timestamp,
-      questions_and_answers: [
-        {
-          question: "What's your budget range?",
-          answer: '$5,000 - $10,000'
-        },
-        {
-          question: 'Company size?',
-          answer: '10-50 employees'
-        },
-        {
-          question: 'How did you hear about us?',
-          answer: 'Google Search'
-        }
-      ],
-      tracking: {
-        utm_source: 'facebook',
-        utm_medium: 'cpc',
-        utm_campaign: 'test_campaign_2026',
-        utm_term: 'calendly_automation',
-        utm_content: 'ad_variant_a'
+    updated_at: timestamp,
+    questions_and_answers: [
+      {
+        question: "What's your budget range?",
+        answer: '$5,000 - $10,000'
       },
-      cancel_url: `https://calendly.com/cancellations/${eventUuid}`,
-      reschedule_url: `https://calendly.com/reschedulings/${eventUuid}`,
-    }
+      {
+        question: 'Company size?',
+        answer: '10-50 employees'
+      },
+      {
+        question: 'How did you hear about us?',
+        answer: 'Google Search'
+      }
+    ],
+    tracking: {
+      utm_source: 'facebook',
+      utm_medium: 'cpc',
+      utm_campaign: 'test_campaign_2026',
+      utm_term: 'calendly_automation',
+      utm_content: 'ad_variant_a'
+    },
+    cancel_url: `https://calendly.com/cancellations/${eventUuid}`,
+    reschedule_url: `https://calendly.com/reschedulings/${eventUuid}`,
   };
 
   // Add event type specific fields
   if (eventType === 'invitee.canceled') {
-    basePayload.payload.canceled_at = timestamp;
-    basePayload.payload.canceler_name = 'Test User';
-    basePayload.payload.cancel_reason = 'Testing CalRouter';
+    payload.canceled_at = timestamp;
+    payload.canceler_name = 'Test User';
+    payload.cancel_reason = 'Testing CalRouter';
   }
 
-  return basePayload;
+  return {
+    event: eventType,
+    created_at: timestamp,
+    payload,
+  };
 }
 
 // Provide help for GET requests

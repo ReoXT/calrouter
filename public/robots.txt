@@ -1,0 +1,9 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Disallow admin routes
+Disallow: /api/
+Disallow: /dashboard/
+
+Sitemap: https://calrouter.app/sitemap.xml

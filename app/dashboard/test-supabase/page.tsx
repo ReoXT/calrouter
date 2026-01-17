@@ -4,7 +4,11 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, XCircle, Loader2, RefreshCw } from 'lucide-react';
+// OPTIMIZATION: Direct icon imports to reduce bundle size
+import CheckCircle from "lucide-react/dist/esm/icons/check-circle";
+import Loader2 from "lucide-react/dist/esm/icons/loader-2";
+import RefreshCw from "lucide-react/dist/esm/icons/refresh-cw";
+import XCircle from "lucide-react/dist/esm/icons/x-circle";
 
 interface TestResult {
   name: string;

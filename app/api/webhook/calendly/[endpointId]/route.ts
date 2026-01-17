@@ -14,9 +14,9 @@ const ratelimit = new Ratelimit({
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { endpointId: string } }
+  { params }: { params: Promise<{ endpointId: string }> }
 ) {
-  const endpointId = params.endpointId;
+  const { endpointId } = await params;
   const startTime = Date.now();
 
   try {
@@ -52,21 +52,46 @@ export async function POST(
       return NextResponse.json({ ok: true, error: 'Invalid webhook structure' });
     }
 
-    // 3. LOOKUP ENDPOINT
+    // 3-7. OPTIMIZATION: Parallelize endpoint lookup and duplicate detection
     if (!supabaseAdmin) {
       console.error('Supabase admin client not initialized');
       return NextResponse.json({ ok: true, error: 'Service unavailable' }, { status: 503 });
     }
 
-    const { data: endpoint, error: endpointError } = await supabaseAdmin
-      .from('webhook_endpoints')
-      .select('*, user:users!inner(*)')
-      .eq('id', endpointId)
-      .single();
+    // OPTIMIZATION: Extract metadata early (synchronous, no await needed)
+    const eventType = payload.event;
+    const eventUri = payload?.payload?.event;
+    const calendlyEventUuid = eventUri ? eventUri.split('/').pop() : 'unknown';
+    const inviteeEmail = payload?.payload?.email || null;
+
+    // OPTIMIZATION: Run endpoint lookup and duplicate check in parallel
+    const [endpointResult, duplicateResult] = await Promise.all([
+      supabaseAdmin
+        .from('webhook_endpoints')
+        .select('*, user:users!inner(*)')
+        .eq('id', endpointId)
+        .single(),
+      supabaseAdmin
+        .from('webhook_logs')
+        .select('id')
+        .eq('endpoint_id', endpointId)
+        .eq('calendly_event_uuid', calendlyEventUuid)
+        .eq('event_type', eventType)
+        .maybeSingle()
+    ]);
+
+    const { data: endpoint, error: endpointError } = endpointResult;
+    const { data: existing } = duplicateResult;
 
     if (endpointError || !endpoint) {
       console.error(`Endpoint not found: ${endpointId}`, endpointError);
       return NextResponse.json({ ok: false, error: 'Endpoint not found' }, { status: 404 });
+    }
+
+    // OPTIMIZATION: Early return for duplicate (avoid unnecessary processing)
+    if (existing) {
+      console.log(`Duplicate webhook detected: ${calendlyEventUuid} - ${eventType}`);
+      return NextResponse.json({ ok: true, duplicate: true });
     }
 
     // 4. CHECK ENDPOINT ACTIVE STATUS
@@ -99,26 +124,6 @@ export async function POST(
           message: 'Trial expired'
         });
       }
-    }
-
-    // 6. EXTRACT METADATA
-    const eventType = payload.event;
-    const eventUri = payload?.payload?.event;
-    const calendlyEventUuid = eventUri ? eventUri.split('/').pop() : 'unknown';
-    const inviteeEmail = payload?.payload?.email || null;
-
-    // 7. DUPLICATE DETECTION
-    const { data: existing } = await supabaseAdmin
-      .from('webhook_logs')
-      .select('id')
-      .eq('endpoint_id', endpointId)
-      .eq('calendly_event_uuid', calendlyEventUuid)
-      .eq('event_type', eventType)
-      .maybeSingle();
-
-    if (existing) {
-      console.log(`Duplicate webhook detected: ${calendlyEventUuid} - ${eventType}`);
-      return NextResponse.json({ ok: true, duplicate: true });
     }
 
     // 8. ENRICH PAYLOAD

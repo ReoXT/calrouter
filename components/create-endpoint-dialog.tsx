@@ -4,8 +4,15 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Plus, Copy, CheckCircle2, Sparkles, Link2, Zap, ArrowRight } from "lucide-react";
-import { toast } from "sonner";
+// OPTIMIZATION: Direct icon imports to reduce bundle size
+import Plus from "lucide-react/dist/esm/icons/plus";
+import Copy from "lucide-react/dist/esm/icons/copy";
+import CheckCircle2 from "lucide-react/dist/esm/icons/check-circle-2";
+import Sparkles from "lucide-react/dist/esm/icons/sparkles";
+import Link2 from "lucide-react/dist/esm/icons/link-2";
+import Zap from "lucide-react/dist/esm/icons/zap";
+import ArrowRight from "lucide-react/dist/esm/icons/arrow-right";;
+import { endpointToasts, clipboardToasts } from "@/lib/toast-utils";
 import {
   Dialog,
   DialogContent,
@@ -26,10 +33,10 @@ const endpointSchema = z.object({
     .string()
     .url("Must be a valid URL")
     .startsWith("https://", "Must be an HTTPS URL"),
-  enable_reschedule_detection: z.boolean().default(true),
-  enable_utm_tracking: z.boolean().default(true),
-  enable_question_parsing: z.boolean().default(true),
-  is_active: z.boolean().default(true),
+  enable_reschedule_detection: z.boolean(),
+  enable_utm_tracking: z.boolean(),
+  enable_question_parsing: z.boolean(),
+  is_active: z.boolean(),
 });
 
 type EndpointFormData = z.infer<typeof endpointSchema>;
@@ -43,17 +50,8 @@ export function CreateEndpointDialog({ onSuccess }: CreateEndpointDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [createdEndpoint, setCreatedEndpoint] = useState<any>(null);
 
-  /**
-   * DIALOG DIMENSIONS - Easily adjustable
-   *
-   * To make the dialog more square, increase both values proportionally:
-   * - For a square look: DIALOG_WIDTH = "700px", DIALOG_MAX_HEIGHT = "90vh"
-   * - For wider: DIALOG_WIDTH = "800px", DIALOG_MAX_HEIGHT = "85vh"
-   * - For taller: DIALOG_WIDTH = "640px", DIALOG_MAX_HEIGHT = "95vh"
-   * - For larger square: DIALOG_WIDTH = "900px", DIALOG_MAX_HEIGHT = "95vh"
-   */
-  const DIALOG_WIDTH = "640px";
-  const DIALOG_MAX_HEIGHT = "85vh";
+  // Simple width control - just change the number
+  const DIALOG_WIDTH = 700; // Change this to make dialog wider/narrower
 
   const form = useForm<EndpointFormData>({
     resolver: zodResolver(endpointSchema),
@@ -94,13 +92,14 @@ export function CreateEndpointDialog({ onSuccess }: CreateEndpointDialogProps) {
 
       const endpoint = await response.json();
       setCreatedEndpoint(endpoint);
-      toast.success("Endpoint created successfully!");
+      endpointToasts.created();
       onSuccess?.(endpoint);
 
       // Don't close dialog yet - show success state first
     } catch (error) {
       console.error("Error creating endpoint:", error);
-      toast.error("Failed to create endpoint. Please try again.");
+      const errorMessage = error instanceof Error ? error.message : undefined;
+      endpointToasts.createFailed(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -114,7 +113,7 @@ export function CreateEndpointDialog({ onSuccess }: CreateEndpointDialogProps) {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast.success("Copied to clipboard!");
+    clipboardToasts.copied('Webhook URL');
   };
 
   return (
@@ -126,106 +125,79 @@ export function CreateEndpointDialog({ onSuccess }: CreateEndpointDialogProps) {
         </Button>
       </DialogTrigger>
       <DialogContent
-        className="bg-card border-border shadow-2xl ring-1 ring-border/50 p-0 overflow-hidden flex flex-col"
+        className="bg-card border-border shadow-2xl ring-1 ring-border/50"
         style={{
-          maxWidth: DIALOG_WIDTH,
-          width: '90vw',
-          maxHeight: DIALOG_MAX_HEIGHT,
-          height: 'auto'
+          width: DIALOG_WIDTH,
+          maxWidth: '95vw'
         }}
         showCloseButton={!createdEndpoint}
       >
         {!createdEndpoint ? (
           <>
-            {/* Modal Header */}
-            <DialogHeader className="px-8 py-6 border-b border-border bg-muted/30">
-              <DialogTitle className="text-xl font-bold tracking-tight">
-                Create New Endpoint
-              </DialogTitle>
-              <DialogDescription className="text-sm text-muted-foreground mt-1">
+            {/* Header */}
+            <DialogHeader className="px-6 py-5 border-b border-border bg-muted/30">
+              <DialogTitle className="text-xl font-bold">Create New Endpoint</DialogTitle>
+              <DialogDescription className="text-sm text-muted-foreground">
                 Configure a new destination for your incoming webhooks.
               </DialogDescription>
             </DialogHeader>
 
-            {/* Modal Body */}
-            <div className="p-8 flex flex-col gap-8 overflow-y-auto flex-1">
-              {/* Basic Configuration */}
-              <div className="flex flex-col gap-5">
-                {/* Endpoint Name */}
-                <div className="flex flex-col gap-2">
-                  <Label className="text-muted-foreground text-[11px] font-bold tracking-widest uppercase pl-1">
-                    Endpoint Name
-                  </Label>
-                  <Input
-                    {...register("name")}
-                    placeholder="e.g. Production Stripe Listener"
-                    className="w-full bg-background border-border rounded-lg px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-medium shadow-inner h-auto"
-                  />
-                  {errors.name && (
-                    <p className="text-xs text-destructive pl-1">{errors.name.message}</p>
-                  )}
-                </div>
-
-                {/* Destination URL */}
-                <div className="flex flex-col gap-2">
-                  <div className="flex justify-between items-center pl-1">
-                    <Label className="text-muted-foreground text-[11px] font-bold tracking-widest uppercase">
-                      Destination URL
-                    </Label>
-                    <button
-                      type="button"
-                      className="text-xs text-primary flex items-center gap-1 cursor-pointer hover:underline"
-                    >
-                      <Zap className="h-3.5 w-3.5" />
-                      Test connection
-                    </button>
-                  </div>
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Link2 className="h-[18px] w-[18px] text-muted-foreground" />
-                    </div>
-                    <Input
-                      {...register("destination_url")}
-                      placeholder="https://"
-                      className="w-full font-mono text-[13px] bg-background border-border rounded-lg pl-10 pr-10 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all shadow-inner h-auto"
-                    />
-                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                      <CheckCircle2 className="h-[18px] w-[18px] text-emerald-500" />
-                    </div>
-                  </div>
-                  {errors.destination_url && (
-                    <p className="text-xs text-destructive pl-1">
-                      {errors.destination_url.message}
-                    </p>
-                  )}
-                </div>
+            {/* Body */}
+            <div className="p-6 space-y-5">
+              {/* Endpoint Name */}
+              <div>
+                <Label className="text-[11px] font-bold uppercase text-muted-foreground">Endpoint Name</Label>
+                <Input
+                  {...register("name")}
+                  placeholder="e.g. Production Listener"
+                  className="mt-2"
+                />
+                {errors.name && (
+                  <p className="text-sm text-destructive mt-1">{errors.name.message}</p>
+                )}
               </div>
 
-              {/* Enrichment Features Section (Purple Zone) */}
-              <div className="bg-primary/5 border border-primary/20 rounded-xl p-1 relative overflow-hidden group">
-                {/* Decorative gradient blob */}
-                <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+              {/* Destination URL */}
+              <div>
+                <div className="flex justify-between items-center">
+                  <Label className="text-[11px] font-bold uppercase text-muted-foreground">Destination URL</Label>
+                  <button type="button" className="text-xs text-primary hover:underline">
+                    <Zap className="h-3.5 w-3.5 inline mr-1" />
+                    Test connection
+                  </button>
+                </div>
+                <div className="relative mt-2">
+                  <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    {...register("destination_url")}
+                    placeholder="https://"
+                    className="pl-10 pr-10 font-mono text-sm"
+                  />
+                  <CheckCircle2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-500" />
+                </div>
+                {errors.destination_url && (
+                  <p className="text-sm text-destructive mt-1">{errors.destination_url.message}</p>
+                )}
+              </div>
 
-                <div className="px-5 py-4 border-b border-primary/10 flex items-center justify-between relative z-10">
+              {/* Enrichment Features */}
+              <div className="bg-primary/5 border border-primary/20 rounded-xl">
+                <div className="px-5 py-4 border-b border-primary/10 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Sparkles className="h-5 w-5 text-primary" />
-                    <h3 className="text-sm font-bold tracking-wide">Data Enrichment</h3>
+                    <h3 className="text-sm font-bold">Data Enrichment</h3>
                   </div>
-                  <span className="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded-full font-bold uppercase tracking-wide border border-primary/20">
+                  <span className="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded-full font-bold uppercase border border-primary/20">
                     Pro
                   </span>
                 </div>
 
-                <div className="p-2 grid gap-1 relative z-10">
+                <div className="p-3 space-y-1">
                   {/* Reschedule Detection */}
-                  <label className="flex items-center justify-between p-3 rounded-lg hover:bg-primary/5 transition-colors cursor-pointer group/item">
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-sm font-medium group-hover/item:text-primary transition-colors">
-                        Reschedule Detection
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        Detect when someone reschedules instead of canceling
-                      </span>
+                  <label className="flex items-start gap-3 p-3 rounded-lg hover:bg-primary/5 cursor-pointer">
+                    <div className="flex-1">
+                      <span className="text-sm font-medium block">Reschedule Detection</span>
+                      <span className="text-xs text-muted-foreground">Detect reschedules vs cancellations</span>
                     </div>
                     <Switch
                       checked={watchedValues.enable_reschedule_detection}
@@ -236,14 +208,10 @@ export function CreateEndpointDialog({ onSuccess }: CreateEndpointDialogProps) {
                   </label>
 
                   {/* UTM Tracking */}
-                  <label className="flex items-center justify-between p-3 rounded-lg hover:bg-primary/5 transition-colors cursor-pointer group/item">
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-sm font-medium group-hover/item:text-primary transition-colors">
-                        UTM Tracking
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        Extract lead source data from booking URLs
-                      </span>
+                  <label className="flex items-start gap-3 p-3 rounded-lg hover:bg-primary/5 cursor-pointer">
+                    <div className="flex-1">
+                      <span className="text-sm font-medium block">UTM Tracking</span>
+                      <span className="text-xs text-muted-foreground">Extract lead source data</span>
                     </div>
                     <Switch
                       checked={watchedValues.enable_utm_tracking}
@@ -254,14 +222,10 @@ export function CreateEndpointDialog({ onSuccess }: CreateEndpointDialogProps) {
                   </label>
 
                   {/* Question Parsing */}
-                  <label className="flex items-center justify-between p-3 rounded-lg hover:bg-primary/5 transition-colors cursor-pointer group/item">
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-sm font-medium group-hover/item:text-primary transition-colors">
-                        Question Parsing
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        Convert custom questions to clean format
-                      </span>
+                  <label className="flex items-start gap-3 p-3 rounded-lg hover:bg-primary/5 cursor-pointer">
+                    <div className="flex-1">
+                      <span className="text-sm font-medium block">Question Parsing</span>
+                      <span className="text-xs text-muted-foreground">Clean custom question format</span>
                     </div>
                     <Switch
                       checked={watchedValues.enable_question_parsing}
@@ -274,9 +238,8 @@ export function CreateEndpointDialog({ onSuccess }: CreateEndpointDialogProps) {
               </div>
             </div>
 
-            {/* Modal Footer */}
-            <div className="px-8 py-5 bg-muted/30 border-t border-border flex justify-between items-center">
-              {/* Active Status Toggle - Left Side */}
+            {/* Footer */}
+            <div className="px-6 py-4 bg-muted/30 border-t border-border flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Label className="text-sm font-medium text-muted-foreground">Active</Label>
                 <Switch
@@ -285,14 +248,12 @@ export function CreateEndpointDialog({ onSuccess }: CreateEndpointDialogProps) {
                 />
               </div>
 
-              {/* Action Buttons - Right Side */}
-              <div className="flex gap-3 items-center">
+              <div className="flex gap-3">
                 <Button
                   type="button"
                   variant="ghost"
                   onClick={handleClose}
                   disabled={isSubmitting}
-                  className="px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-accent transition-colors"
                 >
                   Cancel
                 </Button>
@@ -300,10 +261,9 @@ export function CreateEndpointDialog({ onSuccess }: CreateEndpointDialogProps) {
                   type="submit"
                   disabled={isSubmitting}
                   onClick={handleSubmit(onSubmit)}
-                  className="px-5 py-2.5 rounded-lg text-sm font-semibold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 btn-smooth flex items-center gap-2"
                 >
-                  <span>{isSubmitting ? "Creating..." : "Create Endpoint"}</span>
-                  <ArrowRight className="h-4 w-4" />
+                  {isSubmitting ? "Creating..." : "Create Endpoint"}
+                  <ArrowRight className="h-4 w-4 ml-2" />
                 </Button>
               </div>
             </div>
@@ -311,13 +271,13 @@ export function CreateEndpointDialog({ onSuccess }: CreateEndpointDialogProps) {
         ) : (
           <>
             {/* Success State */}
-            <div className="p-8 space-y-6">
+            <div className="p-6 md:p-8 space-y-5 md:space-y-6">
               <Alert className="border-primary/20 bg-primary/5">
                 <CheckCircle2 className="h-5 w-5 text-primary" />
                 <AlertTitle className="text-base font-semibold">
                   Endpoint created successfully!
                 </AlertTitle>
-                <AlertDescription>
+                <AlertDescription className="text-sm">
                   Your webhook endpoint is ready to receive enriched data.
                 </AlertDescription>
               </Alert>
@@ -328,7 +288,7 @@ export function CreateEndpointDialog({ onSuccess }: CreateEndpointDialogProps) {
                     Your Webhook URL
                   </Label>
                   <div className="flex items-center gap-2 p-3 bg-muted rounded-lg border border-border shadow-inner">
-                    <code className="flex-1 text-sm font-mono truncate">
+                    <code className="flex-1 text-xs md:text-sm font-mono truncate">
                       https://calrouter.app/api/webhook/calendly/{createdEndpoint?.id || "xxxxx"}
                     </code>
                     <Button
@@ -339,6 +299,8 @@ export function CreateEndpointDialog({ onSuccess }: CreateEndpointDialogProps) {
                           `https://calrouter.app/api/webhook/calendly/${createdEndpoint?.id}`
                         )
                       }
+                      className="h-8 w-8 p-0 flex-shrink-0"
+                      aria-label="Copy webhook URL"
                     >
                       <Copy className="h-4 w-4" />
                     </Button>
@@ -365,7 +327,7 @@ export function CreateEndpointDialog({ onSuccess }: CreateEndpointDialogProps) {
               </div>
 
               <div className="pt-4">
-                <Button onClick={handleClose} className="w-full shadow-lg shadow-primary/25">
+                <Button onClick={handleClose} className="w-full shadow-lg shadow-primary/25 h-10 text-sm">
                   Done
                 </Button>
               </div>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CalRouter | Dashboard Setup Guide</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Roboto+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8e65e2",
+                        "background-light": "#ffffff",
+                        "background-dark": "#17171c",
+                        "card-dark": "#2B2D33",
+                        "code-bg": "#111116",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"],
+                        "mono": ["Roboto Mono"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .syntax-keyword { color: #c678dd; }
+        .syntax-string { color: #98c379; }
+        .syntax-function { color: #61afef; }
+        .syntax-comment { color: #5c6370; font-style: italic; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+<div class="flex min-h-screen">
+<!-- Sidebar Navigation -->
+<aside class="w-72 border-r border-slate-200 dark:border-slate-800 flex flex-col fixed h-full bg-background-light dark:bg-background-dark z-20">
+<div class="p-6 flex items-center gap-3">
+<div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">bolt</span>
+</div>
+<div>
+<h1 class="text-lg font-bold leading-tight">CalRouter</h1>
+<p class="text-xs text-slate-500 dark:text-slate-400">Webhook Enrichment</p>
+</div>
+</div>
+<nav class="flex-1 px-4 mt-4 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">grid_view</span>
+<span class="text-sm font-medium">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-primary/10 text-primary rounded-lg transition-colors border border-primary/20" href="#">
+<span class="material-symbols-outlined text-[20px] fill-current">library_books</span>
+<span class="text-sm font-semibold">Setup Guide</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">history</span>
+<span class="text-sm font-medium">Enrichment Logs</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">api</span>
+<span class="text-sm font-medium">Webhooks</span>
+</a>
+<div class="pt-4 pb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-600">
+                    Account
+                </div>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">key</span>
+<span class="text-sm font-medium">API Keys</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-3 p-2 bg-slate-100 dark:bg-slate-800/50 rounded-xl">
+<div class="w-8 h-8 rounded-full bg-slate-300 dark:bg-slate-700 overflow-hidden">
+<img alt="Avatar" data-alt="User avatar for developer profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDO-m3cUGSPbJoTAWF4h_Wg4C5Hf1kyW0WpJ3kU3b04WTQyGIscGdZeSMhjc2UiWmWch53AfvY7SqPI5viMQjQMVDZODBrD4Nj7xLV2VLB_ZIqoUTBJCNRVJ-QchNEylFb_afEyfuBzqd7HTA20Awj-qB7YC8RKeHZFKzD8FDm89vaKs6KRQoFD0BPwC42koSvmkfV94TwDblCOQYdmZIlicazcSxv2lfvhbbKwgpn8xSB-NJb7_7em1YZ4vj-vREvwEc2H1iyfHw"/>
+</div>
+<div class="flex-1 overflow-hidden">
+<p class="text-xs font-bold truncate">Alex Rivard</p>
+<p class="text-[10px] text-slate-500 truncate">Pro Developer</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 ml-72">
+<div class="max-w-5xl mx-auto px-8 py-12">
+<!-- Page Header -->
+<header class="mb-12">
+<div class="flex items-center gap-2 text-primary mb-2">
+<span class="material-symbols-outlined text-sm">auto_stories</span>
+<span class="text-xs font-bold uppercase tracking-widest">Developer Resources</span>
+</div>
+<h2 class="text-4xl font-extrabold tracking-tight mb-4">Dashboard Setup Guide</h2>
+<p class="text-lg text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed">
+                        Integrate CalRouter into your workflow in minutes. Follow these three steps to start enriching your Calendly events with firmographic data.
+                    </p>
+</header>
+<div class="grid grid-cols-12 gap-12">
+<!-- Progress Sidebar (Content Context) -->
+<div class="col-span-3">
+<div class="sticky top-12 space-y-0">
+<!-- Step 1 -->
+<div class="relative pl-8 pb-10 border-l-2 border-primary">
+<div class="absolute -left-[11px] top-0 w-5 h-5 bg-primary rounded-full flex items-center justify-center ring-4 ring-background-light dark:ring-background-dark">
+<span class="material-symbols-outlined text-white text-[12px] font-bold">check</span>
+</div>
+<h4 class="text-sm font-bold text-slate-900 dark:text-white leading-none mb-1">Connect Calendly</h4>
+<p class="text-xs text-primary font-medium">Completed</p>
+</div>
+<!-- Step 2 -->
+<div class="relative pl-8 pb-10 border-l-2 border-primary/30">
+<div class="absolute -left-[11px] top-0 w-5 h-5 bg-primary rounded-full flex items-center justify-center ring-4 ring-background-light dark:ring-background-dark">
+<div class="w-2 h-2 bg-white rounded-full"></div>
+</div>
+<h4 class="text-sm font-bold text-slate-900 dark:text-white leading-none mb-1">Configure Data</h4>
+<p class="text-xs text-slate-500">In Progress</p>
+</div>
+<!-- Step 3 -->
+<div class="relative pl-8 border-l-2 border-slate-200 dark:border-slate-800">
+<div class="absolute -left-[11px] top-0 w-5 h-5 bg-slate-200 dark:bg-slate-800 rounded-full ring-4 ring-background-light dark:ring-background-dark"></div>
+<h4 class="text-sm font-bold text-slate-400 dark:text-slate-600 leading-none mb-1">Live Test</h4>
+<p class="text-xs text-slate-400 dark:text-slate-600">Pending</p>
+</div>
+</div>
+</div>
+<!-- Step Content -->
+<div class="col-span-9 space-y-12">
+<!-- Step 1: Connect -->
+<section class="bg-background-light dark:bg-card-dark border border-slate-200 dark:border-slate-800 rounded-xl p-8 shadow-sm">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">link</span>
+</div>
+<h3 class="text-2xl font-bold">1. Connect Calendly</h3>
+</div>
+<span class="px-3 py-1 bg-green-500/10 text-green-500 text-xs font-bold rounded-full border border-green-500/20 uppercase">Connected</span>
+</div>
+<p class="text-slate-600 dark:text-slate-300 mb-6 leading-relaxed">
+                                To listen for new bookings, CalRouter requires a Personal Access Token from your Calendly account. This token allows us to subscribe to <code class="bg-slate-100 dark:bg-slate-900 px-1 rounded text-primary">invitee.created</code> events.
+                            </p>
+<div class="space-y-4">
+<label class="block text-sm font-semibold text-slate-500">Your Calendly API Key</label>
+<div class="flex gap-2">
+<input class="flex-1 bg-slate-50 dark:bg-code-bg border-slate-200 dark:border-slate-700 rounded-lg px-4 font-mono text-sm" readonly="" type="password" value="cal_live_••••••••••••••••"/>
+<button class="px-4 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 rounded-lg transition-colors font-semibold text-sm">Rotate</button>
+</div>
+</div>
+</section>
+<!-- Step 2: Configure -->
+<section class="bg-background-light dark:bg-card-dark border border-slate-200 dark:border-slate-800 rounded-xl p-8 shadow-sm">
+<div class="flex items-center gap-4 mb-6">
+<div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">settings_suggest</span>
+</div>
+<h3 class="text-2xl font-bold">2. Configure Enrichment</h3>
+</div>
+<p class="text-slate-600 dark:text-slate-300 mb-8 leading-relaxed">
+                                Choose which data points you'd like to append to your incoming webhooks. CalRouter currently supports over 40+ professional attributes.
+                            </p>
+<div class="grid grid-cols-2 gap-4 mb-8">
+<div class="p-4 border border-primary bg-primary/5 rounded-xl flex items-center gap-4">
+<input checked="" class="rounded text-primary focus:ring-primary bg-transparent border-primary" type="checkbox"/>
+<div>
+<p class="text-sm font-bold">Company Insights</p>
+<p class="text-xs text-slate-500">Revenue, Size, Industry</p>
+</div>
+</div>
+<div class="p-4 border border-slate-200 dark:border-slate-700 rounded-xl flex items-center gap-4 hover:border-primary/50 transition-colors cursor-pointer">
+<input checked="" class="rounded text-primary focus:ring-primary bg-transparent border-slate-500" type="checkbox"/>
+<div>
+<p class="text-sm font-bold">Social Profiles</p>
+<p class="text-xs text-slate-500">LinkedIn, X (Twitter), GitHub</p>
+</div>
+</div>
+<div class="p-4 border border-slate-200 dark:border-slate-700 rounded-xl flex items-center gap-4 hover:border-primary/50 transition-colors cursor-pointer">
+<input class="rounded text-primary focus:ring-primary bg-transparent border-slate-500" type="checkbox"/>
+<div>
+<p class="text-sm font-bold">Tech Stack</p>
+<p class="text-xs text-slate-500">What tools they use</p>
+</div>
+</div>
+<div class="p-4 border border-slate-200 dark:border-slate-700 rounded-xl flex items-center gap-4 hover:border-primary/50 transition-colors cursor-pointer">
+<input class="rounded text-primary focus:ring-primary bg-transparent border-slate-500" type="checkbox"/>
+<div>
+<p class="text-sm font-bold">Contact Verification</p>
+<p class="text-xs text-slate-500">Email deliverability status</p>
+</div>
+</div>
+</div>
+<button class="w-full py-4 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
+                                Save Configuration <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</section>
+<!-- Step 3: Test -->
+<section class="bg-background-light dark:bg-card-dark border border-slate-200 dark:border-slate-800 rounded-xl p-8 shadow-sm">
+<div class="flex items-center gap-4 mb-6">
+<div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">terminal</span>
+</div>
+<h3 class="text-2xl font-bold">3. Test Integration</h3>
+</div>
+<p class="text-slate-600 dark:text-slate-300 mb-6 leading-relaxed">
+                                Use our test runner to simulate a Calendly webhook. This will trigger the enrichment process and send the result to your destination URL.
+                            </p>
+<!-- Code Tabs -->
+<div class="mb-4 flex border-b border-slate-200 dark:border-slate-800">
+<button class="px-4 py-2 text-sm font-bold border-b-2 border-primary text-primary">Curl</button>
+<button class="px-4 py-2 text-sm font-medium text-slate-500 hover:text-slate-800 dark:hover:text-slate-200">Node.js</button>
+<button class="px-4 py-2 text-sm font-medium text-slate-500 hover:text-slate-800 dark:hover:text-slate-200">Python</button>
+</div>
+<!-- Code Block -->
+<div class="relative group">
+<pre class="bg-code-bg rounded-xl p-6 font-mono text-sm overflow-x-auto no-scrollbar leading-relaxed"><span class="syntax-keyword">curl</span> -X POST https://api.calrouter.com/v1/test \
+  -H <span class="syntax-string">"Authorization: Bearer YOUR_API_KEY"</span> \
+  -H <span class="syntax-string">"Content-Type: application/json"</span> \
+  -d '{
+    <span class="syntax-function">"event"</span>: <span class="syntax-string">"invitee.created"</span>,
+    <span class="syntax-function">"payload"</span>: {
+      <span class="syntax-function">"email"</span>: <span class="syntax-string">"steve@apple.com"</span>,
+      <span class="syntax-function">"name"</span>: <span class="syntax-string">"Steve Jobs"</span>
+    }
+  }'</pre>
+<button class="absolute top-4 right-4 p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+</button>
+</div>
+<div class="mt-8 flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 bg-slate-400 rounded-full animate-pulse"></div>
+<span class="text-sm font-medium text-slate-500">Waiting for test payload...</span>
+</div>
+<button class="text-xs font-bold text-primary hover:underline">Clear Logs</button>
+</div>
+</section>
+<!-- Footer Nav -->
+<footer class="flex items-center justify-between pt-8">
+<button class="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+                                Previous Step
+                            </button>
+<div class="flex gap-4">
+<button class="px-6 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Skip for now</button>
+<button class="px-6 py-2 bg-primary text-white rounded-lg font-bold text-sm hover:bg-primary/90 transition-all">Go to Dashboard</button>
+</div>
+</footer>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

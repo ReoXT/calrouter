@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Payment Successful - CalRouter</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8e65e2",
+                        "background-light": "#fafafa",
+                        "background-dark": "#2d2b31",
+                        "surface-dark": "#36353B",
+                        "surface-lighter": "#424047",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom subtle glow effects */
+        .glow-primary {
+            box-shadow: 0 0 20px rgba(142, 101, 226, 0.4);
+        }
+        .glow-icon {
+            box-shadow: 0 0 40px rgba(142, 101, 226, 0.25);
+        }
+        
+        /* Subtle particle animation simulation (CSS only) */
+        .particle {
+            position: absolute;
+            background: #8e65e2;
+            border-radius: 50%;
+            opacity: 0;
+            animation: float 3s infinite ease-in-out;
+        }
+        
+        .particle:nth-child(1) { width: 6px; height: 6px; top: 20%; left: 30%; animation-delay: 0s; }
+        .particle:nth-child(2) { width: 8px; height: 8px; top: 15%; right: 25%; animation-delay: 1s; }
+        .particle:nth-child(3) { width: 4px; height: 4px; bottom: 30%; left: 20%; animation-delay: 2s; }
+        .particle:nth-child(4) { width: 5px; height: 5px; top: 40%; right: 15%; animation-delay: 0.5s; }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); opacity: 0; }
+            50% { opacity: 0.6; }
+            100% { transform: translateY(-20px); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-900 dark:text-white min-h-screen flex flex-col overflow-x-hidden antialiased selection:bg-primary selection:text-white">
+<!-- Top Nav -->
+<nav class="w-full border-b border-gray-200 dark:border-[#3f3c45] bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+<div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+<div class="flex items-center gap-3 text-gray-900 dark:text-white">
+<div class="flex items-center justify-center size-8 rounded-lg bg-primary/20 text-primary">
+<span class="material-symbols-outlined text-xl">router</span>
+</div>
+<h2 class="text-lg font-bold tracking-tight">CalRouter</h2>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-surface-dark border border-gray-200 dark:border-gray-700">
+<div class="size-2 rounded-full bg-green-500 animate-pulse"></div>
+<span class="text-xs font-medium text-gray-600 dark:text-gray-300">System Operational</span>
+</div>
+<div class="size-9 rounded-full bg-surface-dark border border-gray-700 bg-center bg-cover" data-alt="User profile avatar placeholder" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBmawR6WzEvw5wFOWiEDAgh6tKmh4hZ0BJZskhIwTFxlKLrunqh7i_J7zrQdNKvKY0YbzzS3gQg3-UNz4OqVFT3GIqqlT1mVkYj4Yvi8zZqmP0eF0rmbb_RXeXqUxF27bjB34hK3rD4kSdSpMKrSuAjjkUhlheqyJ8rP5aF_XJCWuOl8fNXH7HS3WlJIyKI5vsudqQ7jYEctVY9YUf4rtqHcwe8Q5WWkNPlJjptm4hBWb7vMCmEcBbDZsT86Z_Kczu-_Z2C17xQ4A');"></div>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-grow flex flex-col items-center justify-center p-6 relative">
+<!-- Ambient Background Glow -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 blur-[120px] rounded-full pointer-events-none z-0"></div>
+<!-- Success Content Container -->
+<div class="relative z-10 w-full max-w-[480px] flex flex-col items-center gap-8 animate-[fadeIn_0.5s_ease-out]">
+<!-- Hero Icon Area -->
+<div class="relative flex items-center justify-center py-6">
+<!-- Particle Effects -->
+<div class="particle"></div>
+<div class="particle"></div>
+<div class="particle"></div>
+<div class="particle"></div>
+<div class="relative z-10 flex items-center justify-center size-24 rounded-full bg-surface-dark border border-surface-lighter glow-icon">
+<div class="absolute inset-0 rounded-full bg-primary/10 animate-pulse"></div>
+<span class="material-symbols-outlined text-5xl text-primary font-bold">check_circle</span>
+</div>
+</div>
+<!-- Headings -->
+<div class="text-center space-y-3">
+<h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+                    Payment Successful
+                </h1>
+<p class="text-gray-500 dark:text-[#a79fb7] text-base leading-relaxed max-w-sm mx-auto">
+                    Thank you for subscribing to CalRouter. Your transaction has been completed and a receipt has been emailed to you.
+                </p>
+</div>
+<!-- Receipt Card -->
+<div class="w-full bg-white dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-[#46444d] overflow-hidden shadow-xl shadow-black/20">
+<!-- Card Header -->
+<div class="bg-gray-50 dark:bg-[#323036] px-6 py-4 border-b border-gray-100 dark:border-[#46444d] flex justify-between items-center">
+<span class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-[#8e8b96]">Receipt Summary</span>
+<span class="text-xs font-mono text-gray-400 dark:text-[#8e8b96]">#INV-2024-001</span>
+</div>
+<!-- Card Body -->
+<div class="p-6 space-y-4">
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<span class="text-gray-500 dark:text-[#a79fb7] text-sm font-medium">Plan</span>
+<span class="text-gray-900 dark:text-white text-base font-semibold">CalRouter Pro Plan</span>
+</div>
+<span class="text-gray-900 dark:text-white text-base font-semibold">$29.00</span>
+</div>
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<span class="text-gray-500 dark:text-[#a79fb7] text-sm font-medium">Billing Cycle</span>
+<span class="text-gray-900 dark:text-white text-sm">Monthly</span>
+</div>
+</div>
+<div class="flex justify-between items-center pt-2">
+<div class="flex flex-col">
+<span class="text-gray-500 dark:text-[#a79fb7] text-sm font-medium">Payment Method</span>
+<div class="flex items-center gap-2 mt-1">
+<span class="material-symbols-outlined text-gray-400 text-lg">credit_card</span>
+<span class="text-gray-900 dark:text-white text-sm">Visa ending in 4242</span>
+</div>
+</div>
+</div>
+<div class="h-px bg-gray-100 dark:bg-[#46444d] my-2"></div>
+<div class="flex justify-between items-center">
+<span class="text-gray-500 dark:text-[#a79fb7] text-sm font-medium">Total Paid</span>
+<span class="text-primary text-xl font-bold">$29.00 USD</span>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col sm:flex-row gap-4 w-full pt-2">
+<button class="flex-1 h-12 px-6 rounded-lg bg-primary hover:bg-[#7d56d1] text-white font-bold tracking-wide transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] glow-primary flex items-center justify-center gap-2 shadow-lg shadow-primary/20">
+<span>Go to Dashboard</span>
+<span class="material-symbols-outlined text-sm font-bold">arrow_forward</span>
+</button>
+<button class="flex-1 h-12 px-6 rounded-lg bg-transparent border border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 text-gray-700 dark:text-[#C8B7DB] font-semibold tracking-wide transition-all duration-200 hover:bg-gray-100 dark:hover:bg-white/5 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-lg">download</span>
+<span>Download Receipt</span>
+</button>
+</div>
+<!-- Footer Help Text -->
+<p class="text-xs text-gray-400 dark:text-gray-500 text-center mt-4">
+                Need help? <a class="text-primary hover:text-[#9f7bf5] underline decoration-primary/30 underline-offset-4" href="#">Contact Support</a>
+</p>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CalRouter - Activity Logs</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&amp;family=Roboto+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8e65e2",
+                        "background-light": "#f8f9fc", // Slightly cool white
+                        "background-dark": "#131217", // Overriding to match the deep dark aesthetic of the example
+                        "surface-dark": "#1c1b22", // A slightly lighter dark for cards
+                        "surface-light": "#ffffff",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"],
+                        "mono": ["Roboto Mono", "monospace"],
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "2xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #443d51;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8e65e2;
+        }
+        .glass-panel {
+            background: rgba(28, 27, 34, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display overflow-hidden selection:bg-primary/30 selection:text-primary-foreground">
+<div class="flex h-screen w-full">
+<!-- Sidebar -->
+<aside class="w-20 lg:w-64 flex-shrink-0 border-r border-slate-200 dark:border-white/5 flex flex-col justify-between bg-surface-light dark:bg-[#0f0e12] transition-all duration-300">
+<div>
+<!-- Logo Area -->
+<div class="h-16 flex items-center px-6 border-b border-transparent dark:border-white/5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-lg shadow-[0_0_15px_rgba(142,101,226,0.3)]">
+                            C
+                        </div>
+<span class="text-lg font-bold tracking-tight hidden lg:block">CalRouter</span>
+</div>
+</div>
+<!-- Nav Items -->
+<nav class="flex flex-col gap-1 p-3 mt-4">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-500 dark:text-[#a79fb7] hover:bg-slate-100 dark:hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px] group-hover:text-primary transition-colors">dashboard</span>
+<span class="text-sm font-medium hidden lg:block">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary dark:text-white dark:bg-[#2e2a37] border border-transparent dark:border-primary/20 shadow-sm relative overflow-hidden group" href="#">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-r-full"></div>
+<span class="material-symbols-outlined text-[24px] text-primary">table_rows</span>
+<span class="text-sm font-medium hidden lg:block">Activity Logs</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-500 dark:text-[#a79fb7] hover:bg-slate-100 dark:hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px] group-hover:text-primary transition-colors">link</span>
+<span class="text-sm font-medium hidden lg:block">Connections</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-500 dark:text-[#a79fb7] hover:bg-slate-100 dark:hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px] group-hover:text-primary transition-colors">api</span>
+<span class="text-sm font-medium hidden lg:block">API Keys</span>
+</a>
+</nav>
+</div>
+<!-- Bottom Actions -->
+<div class="p-3">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-500 dark:text-[#a79fb7] hover:bg-slate-100 dark:hover:bg-white/5 transition-colors group mb-1" href="#">
+<span class="material-symbols-outlined text-[24px] group-hover:text-slate-900 dark:group-hover:text-white transition-colors">settings</span>
+<span class="text-sm font-medium hidden lg:block">Settings</span>
+</a>
+<div class="border-t border-slate-200 dark:border-white/10 pt-4 pb-2 px-3 flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 ring-2 ring-white/10" data-alt="User Avatar Gradient"></div>
+<div class="hidden lg:flex flex-col">
+<span class="text-sm font-medium text-slate-900 dark:text-white leading-none">Alex D.</span>
+<span class="text-xs text-slate-500 dark:text-[#a79fb7] mt-1">Pro Plan</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col h-full overflow-hidden relative">
+<!-- Decorative gradient blur at top -->
+<div class="absolute top-0 left-0 w-full h-64 bg-primary/5 blur-[100px] pointer-events-none z-0"></div>
+<!-- Header Section -->
+<header class="flex-shrink-0 px-6 py-6 md:px-10 z-10">
+<div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2">
+<h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Activity Logs</h1>
+<div class="h-2 w-2 rounded-full bg-green-500 animate-pulse" title="Live System"></div>
+</div>
+<p class="text-slate-500 dark:text-[#a79fb7] text-base max-w-2xl">
+                            Monitor incoming webhook events in real-time. Debug payloads and retry failed delivery attempts.
+                        </p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-surface-dark border border-slate-200 dark:border-white/10 rounded-lg shadow-sm hover:bg-slate-50 dark:hover:bg-[#25242c] transition-colors text-sm font-medium">
+<span class="material-symbols-outlined text-[20px]">download</span>
+                            Export
+                        </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg shadow-[0_4px_14px_0_rgba(142,101,226,0.39)] transition-all transform active:scale-95 text-sm font-medium">
+<span class="material-symbols-outlined text-[20px]">refresh</span>
+                            Refresh
+                        </button>
+</div>
+</div>
+<!-- Filters & Search Toolbar -->
+<div class="mt-8 flex flex-col xl:flex-row gap-4 justify-between items-start xl:items-center">
+<!-- Filter Chips -->
+<div class="flex flex-wrap gap-2 items-center w-full xl:w-auto">
+<div class="relative group">
+<button class="flex h-9 items-center gap-2 rounded-lg bg-white dark:bg-surface-dark border border-slate-200 dark:border-white/10 px-3 pl-3.5 hover:border-primary/50 transition-colors">
+<span class="text-slate-600 dark:text-slate-300 text-sm font-medium">Endpoint</span>
+<span class="material-symbols-outlined text-slate-400 text-[20px]">expand_more</span>
+</button>
+</div>
+<div class="relative group">
+<button class="flex h-9 items-center gap-2 rounded-lg bg-white dark:bg-surface-dark border border-slate-200 dark:border-white/10 px-3 pl-3.5 hover:border-primary/50 transition-colors">
+<span class="text-slate-600 dark:text-slate-300 text-sm font-medium">Event Type</span>
+<span class="material-symbols-outlined text-slate-400 text-[20px]">expand_more</span>
+</button>
+</div>
+<div class="relative group">
+<button class="flex h-9 items-center gap-2 rounded-lg bg-white dark:bg-surface-dark border border-slate-200 dark:border-white/10 px-3 pl-3.5 hover:border-primary/50 transition-colors">
+<span class="text-slate-600 dark:text-slate-300 text-sm font-medium">Status</span>
+<span class="material-symbols-outlined text-slate-400 text-[20px]">expand_more</span>
+</button>
+</div>
+<div class="h-6 w-px bg-slate-200 dark:bg-white/10 mx-1 hidden sm:block"></div>
+<button class="text-slate-500 dark:text-slate-400 text-sm font-medium hover:text-primary transition-colors">Clear filters</button>
+</div>
+<!-- Search -->
+<div class="relative w-full xl:w-96 group">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors text-[20px]">search</span>
+</div>
+<input class="block w-full pl-10 pr-3 py-2 h-10 border border-slate-200 dark:border-white/10 rounded-lg leading-5 bg-white dark:bg-surface-dark text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:bg-white dark:focus:bg-[#1a1920] focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm transition-all" placeholder="Search by ID, payload, or source..." type="text"/>
+<div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+<span class="text-slate-400 text-xs border border-slate-200 dark:border-white/10 rounded px-1.5 py-0.5 font-mono">/</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Table Section -->
+<div class="flex-1 overflow-auto px-6 md:px-10 pb-6 z-10">
+<div class="min-w-full inline-block align-middle">
+<div class="border border-slate-200 dark:border-white/10 rounded-xl overflow-hidden bg-white dark:bg-surface-dark shadow-sm">
+<table class="min-w-full divide-y divide-slate-200 dark:divide-white/5">
+<thead class="bg-slate-50 dark:bg-[#1a1920]">
+<tr>
+<th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider" scope="col">Timestamp</th>
+<th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider" scope="col">Endpoint</th>
+<th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider" scope="col">Event Type</th>
+<th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider" scope="col">Reschedule</th>
+<th class="px-6 py-4 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider hidden xl:table-cell" scope="col">Source</th>
+<th class="px-6 py-4 text-right text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider" scope="col">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-200 dark:divide-white/5 bg-white dark:bg-surface-dark">
+<!-- Row 1 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group cursor-pointer">
+<td class="px-6 py-4 whitespace-nowrap">
+<div class="flex items-center">
+<span class="font-mono text-sm text-slate-600 dark:text-slate-300">2023-10-27 14:30:05</span>
+</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<div class="text-sm font-medium text-slate-900 dark:text-white font-mono">/api/v1/booking-created</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300 border border-purple-200 dark:border-purple-800/50">
+                                            Booking.Created
+                                        </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-primary">check_circle</span>
+                                            Yes
+                                        </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap hidden xl:table-cell">
+<div class="text-sm text-slate-500 dark:text-slate-400">google / cpc</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-right">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                            200 OK
+                                        </span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group cursor-pointer">
+<td class="px-6 py-4 whitespace-nowrap">
+<div class="flex items-center">
+<span class="font-mono text-sm text-slate-600 dark:text-slate-300">2023-10-27 14:29:12</span>
+</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<div class="text-sm font-medium text-slate-900 dark:text-white font-mono">/api/v1/user-signup</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-200 dark:border-blue-800/50">
+                                            User.Signup
+                                        </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 text-sm text-slate-400 dark:text-slate-600">
+<span class="material-symbols-outlined text-[16px]">remove</span>
+                                            No
+                                        </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap hidden xl:table-cell">
+<div class="text-sm text-slate-500 dark:text-slate-400">direct</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-right">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                            200 OK
+                                        </span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group cursor-pointer relative">
+<td class="px-6 py-4 whitespace-nowrap">
+<div class="flex items-center">
+<span class="font-mono text-sm text-slate-600 dark:text-slate-300">2023-10-27 14:28:45</span>
+</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<div class="text-sm font-medium text-slate-900 dark:text-white font-mono">/api/v1/payment-failed</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-800 dark:bg-white/5 dark:text-slate-300 border border-slate-200 dark:border-white/10">
+                                            Payment.Failed
+                                        </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 text-sm text-slate-400 dark:text-slate-600">
+<span class="material-symbols-outlined text-[16px]">remove</span>
+                                            No
+                                        </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap hidden xl:table-cell">
+<div class="text-sm text-slate-500 dark:text-slate-400">facebook / ads</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-right">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-500/10 dark:text-red-400 border border-red-200 dark:border-red-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                            400 Error
+                                        </span>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group cursor-pointer">
+<td class="px-6 py-4 whitespace-nowrap">
+<div class="flex items-center">
+<span class="font-mono text-sm text-slate-600 dark:text-slate-300">2023-10-27 14:25:00</span>
+</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<div class="text-sm font-medium text-slate-900 dark:text-white font-mono">/api/v1/booking-updated</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300 border border-purple-200 dark:border-purple-800/50">
+                                            Booking.Updated
+                                        </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-[16px] text-primary">check_circle</span>
+                                            Yes
+                                        </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap hidden xl:table-cell">
+<div class="text-sm text-slate-500 dark:text-slate-400">email</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-right">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                            200 OK
+                                        </span>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group cursor-pointer">
+<td class="px-6 py-4 whitespace-nowrap">
+<div class="flex items-center">
+<span class="font-mono text-sm text-slate-600 dark:text-slate-300">2023-10-27 14:22:30</span>
+</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<div class="text-sm font-medium text-slate-900 dark:text-white font-mono">/api/v1/webhook-test</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 border border-amber-200 dark:border-amber-800/50">
+                                            Test.Event
+                                        </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 text-sm text-slate-400 dark:text-slate-600">
+<span class="material-symbols-outlined text-[16px]">remove</span>
+                                            No
+                                        </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap hidden xl:table-cell">
+<div class="text-sm text-slate-500 dark:text-slate-400">internal</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-right">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                            200 OK
+                                        </span>
+</td>
+</tr>
+<!-- Row 6 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group cursor-pointer">
+<td class="px-6 py-4 whitespace-nowrap">
+<div class="flex items-center">
+<span class="font-mono text-sm text-slate-600 dark:text-slate-300">2023-10-27 14:20:15</span>
+</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<div class="text-sm font-medium text-slate-900 dark:text-white font-mono">/api/v1/sync-calendar</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-300 border border-pink-200 dark:border-pink-800/50">
+                                            Calendar.Sync
+                                        </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="inline-flex items-center gap-1 text-sm text-slate-400 dark:text-slate-600">
+<span class="material-symbols-outlined text-[16px]">remove</span>
+                                            No
+                                        </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap hidden xl:table-cell">
+<div class="text-sm text-slate-500 dark:text-slate-400">google / cpc</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-right">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-500/10 dark:text-red-400 border border-red-200 dark:border-red-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                            500 Error
+                                        </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="flex items-center justify-between mt-4 px-2">
+<div class="text-sm text-slate-500 dark:text-slate-400">
+                            Showing <span class="font-medium text-slate-900 dark:text-white">1</span> to <span class="font-medium text-slate-900 dark:text-white">6</span> of <span class="font-medium text-slate-900 dark:text-white">2,400</span> results
+                        </div>
+<div class="flex gap-2">
+<button class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-surface-dark text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-white/5 transition-colors disabled:opacity-50" disabled="">
+                                Previous
+                            </button>
+<button class="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-surface-dark text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                                Next
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

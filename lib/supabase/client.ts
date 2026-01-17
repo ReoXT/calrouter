@@ -200,7 +200,14 @@ export type User = {
   email: string;
   subscription_status: string;
   trial_ends_at: string | null;
+  stripe_customer_id?: string | null;
+  stripe_subscription_id?: string | null;
+  payment_failure_count?: number;
+  last_payment_failure_at?: string | null;
+  subscription_plan_type?: string | null;
+  subscription_period_end?: string | null;
   created_at: string;
+  updated_at?: string;
 };
 
 export type WebhookEndpoint = {

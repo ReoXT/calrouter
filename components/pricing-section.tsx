@@ -4,7 +4,8 @@ import { useState } from 'react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Check } from 'lucide-react'
+// OPTIMIZATION: Direct icon imports to reduce bundle size
+import Check from "lucide-react/dist/esm/icons/check";
 
 export function PricingSection() {
   const [showAnnual, setShowAnnual] = useState(true)
