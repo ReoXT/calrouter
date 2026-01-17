@@ -3,6 +3,11 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactCompiler: true,
 
+  // Set the correct root directory for Turbopack
+  turbopack: {
+    root: __dirname,
+  },
+
   // Performance optimizations
   experimental: {
     optimizePackageImports: ['lucide-react', '@clerk/nextjs', 'recharts'],

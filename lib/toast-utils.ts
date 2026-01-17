@@ -69,7 +69,7 @@ export function showPromise<T>(
   },
   options?: ExternalToast
 ) {
-  return toast.promise(promise, messages, options);
+  return toast.promise(promise, messages);
 }
 
 /**
@@ -225,7 +225,7 @@ export async function toastApiRequest<T>(
     error?: string | ((error: Error) => string);
   }
 ): Promise<T> {
-  return showPromise(
+  const result = await showPromise(
     request(),
     {
       loading: messages.loading,
@@ -235,6 +235,7 @@ export async function toastApiRequest<T>(
       ),
     }
   );
+  return result as T;
 }
 
 /**

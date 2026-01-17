@@ -53,6 +53,9 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  // Type assertion after null check
+  const supabase = supabaseAdmin;
+
   try {
     const now = new Date();
     const cooldownThreshold = new Date(
@@ -66,7 +69,7 @@ export async function GET(request: NextRequest) {
 
     // ===== 2. Find Endpoints with Recent Consecutive Failures =====
     // Strategy: Get all active endpoints and check their recent webhook logs
-    const { data: activeEndpoints, error: endpointsError } = await supabaseAdmin
+    const { data: activeEndpoints, error: endpointsError } = await supabase
       .from('webhook_endpoints')
       .select(`
         id,
@@ -104,10 +107,13 @@ export async function GET(request: NextRequest) {
     const results = await Promise.allSettled(
       activeEndpoints.map(async (endpoint) => {
         try {
+          // Get user data (Supabase returns as array from join)
+          const user = Array.isArray(endpoint.user) ? endpoint.user[0] : endpoint.user;
+
           // EDGE CASE: Skip if user subscription is expired
           if (
-            endpoint.user.subscription_status !== 'active' &&
-            endpoint.user.subscription_status !== 'trial'
+            user.subscription_status !== 'active' &&
+            user.subscription_status !== 'trial'
           ) {
             return {
               success: true,
@@ -131,7 +137,7 @@ export async function GET(request: NextRequest) {
           }
 
           // Get recent logs (last 10) to check for consecutive failures
-          const { data: recentLogs, error: logsError } = await supabaseAdmin
+          const { data: recentLogs, error: logsError } = await supabase
             .from('webhook_logs')
             .select('id, status, error_message, created_at')
             .eq('endpoint_id', endpoint.id)
@@ -181,8 +187,8 @@ export async function GET(request: NextRequest) {
           }
 
           // EDGE CASE: Validate user email before sending
-          if (!endpoint.user.email || !isValidEmail(endpoint.user.email)) {
-            console.error(`Invalid email for user ${endpoint.user.id}: ${endpoint.user.email}`);
+          if (!user.email || !isValidEmail(user.email)) {
+            console.error(`Invalid email for user ${user.id}: ${user.email}`);
             return {
               success: false,
               endpointId: endpoint.id,
@@ -196,7 +202,7 @@ export async function GET(request: NextRequest) {
 
           try {
             await sendWebhookFailureEmail(
-              endpoint.user.email,
+              user.email,
               endpoint.name,
               consecutiveFailures,
               lastError || 'Unknown error'
@@ -204,13 +210,13 @@ export async function GET(request: NextRequest) {
             emailSent = true;
           } catch (error) {
             emailError = error;
-            console.error(`Failed to send failure email to ${endpoint.user.email}:`, error);
+            console.error(`Failed to send failure email to ${user.email}:`, error);
 
             // Retry once after delay
             try {
               await new Promise((resolve) => setTimeout(resolve, EMAIL_RETRY_DELAY_MS));
               await sendWebhookFailureEmail(
-                endpoint.user.email,
+                user.email,
                 endpoint.name,
                 consecutiveFailures,
                 lastError || 'Unknown error'
@@ -218,14 +224,14 @@ export async function GET(request: NextRequest) {
               emailSent = true;
               emailError = null;
             } catch (retryError) {
-              console.error(`Email retry failed for ${endpoint.user.email}:`, retryError);
+              console.error(`Email retry failed for ${user.email}:`, retryError);
               // Don't throw - log the failure and continue
             }
           }
 
           // Update notification timestamp (prevents duplicate sends)
           if (emailSent) {
-            await supabaseAdmin
+            await supabase
               .from('webhook_endpoints')
               .update({ failure_notification_sent_at: now.toISOString() })
               .eq('id', endpoint.id);

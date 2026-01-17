@@ -25,7 +25,22 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-const sections = [
+interface Subsection {
+  id: string;
+  title: string;
+  content: string;
+  example?: any;
+  notes?: string;
+}
+
+interface Section {
+  id: string;
+  title: string;
+  icon: any;
+  subsections: Subsection[];
+}
+
+const sections: Section[] = [
   {
     id: 'getting-started',
     title: 'Getting Started',

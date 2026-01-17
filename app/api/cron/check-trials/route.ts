@@ -56,6 +56,9 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  // Type assertion after null check
+  const supabase = supabaseAdmin;
+
   try {
     const now = new Date();
     const warningDate = new Date(now.getTime() + TRIAL_WARNING_DAYS * 24 * 60 * 60 * 1000);
@@ -66,7 +69,7 @@ export async function GET(request: NextRequest) {
     });
 
     // ===== 2. Handle Expired Trials =====
-    const { data: expiredUsers, error: expiredError } = await supabaseAdmin
+    const { data: expiredUsers, error: expiredError } = await supabase
       .from('users')
       .select('id, email, clerk_user_id, trial_ends_at, subscription_status')
       .eq('subscription_status', 'trial')
@@ -87,7 +90,7 @@ export async function GET(request: NextRequest) {
         try {
           // EDGE CASE: Double-check user hasn't already been processed
           // (handles concurrent cron executions)
-          const { data: currentUser } = await supabaseAdmin
+          const { data: currentUser } = await supabase
             .from('users')
             .select('subscription_status')
             .eq('id', user.id)
@@ -105,7 +108,7 @@ export async function GET(request: NextRequest) {
           }
 
           // Update user status (atomic operation)
-          const { error: updateError, data: updatedUser } = await supabaseAdmin
+          const { error: updateError, data: updatedUser } = await supabase
             .from('users')
             .update({
               subscription_status: 'expired',
@@ -128,12 +131,14 @@ export async function GET(request: NextRequest) {
           }
 
           // Disable all user's endpoints (idempotent - safe to run multiple times)
-          const { error: endpointsError, count: disabledCount } = await supabaseAdmin
+          const { error: endpointsError, data: disabledEndpoints } = await supabase
             .from('webhook_endpoints')
             .update({ is_active: false })
             .eq('user_id', user.id)
             .eq('is_active', true) // Only update active endpoints
-            .select('id', { count: 'exact', head: true });
+            .select();
+
+          const disabledCount = disabledEndpoints?.length || 0;
 
           if (endpointsError) {
             console.error(`⚠️  Failed to disable endpoints for user ${user.id}:`, endpointsError);
@@ -187,7 +192,7 @@ export async function GET(request: NextRequest) {
     );
 
     // ===== 3. Handle Trials Expiring Soon (Warning Emails) =====
-    const { data: expiringUsers, error: expiringError } = await supabaseAdmin
+    const { data: expiringUsers, error: expiringError } = await supabase
       .from('users')
       .select('id, email, trial_ends_at, subscription_status, trial_reminder_sent_at')
       .eq('subscription_status', 'trial')
@@ -250,7 +255,7 @@ export async function GET(request: NextRequest) {
           await sendTrialEndingEmail(user.email, daysLeft);
 
           // Update reminder timestamp (prevents duplicate sends)
-          await supabaseAdmin
+          await supabase
             .from('users')
             .update({ trial_reminder_sent_at: now.toISOString() })
             .eq('id', user.id);

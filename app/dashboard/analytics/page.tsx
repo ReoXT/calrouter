@@ -113,13 +113,13 @@ async function getAnalyticsData(userId: string, dateRange: string = '30d') {
   const totalEnrichments = webhookActivityData.length;
   const prevPeriodStart = subDays(startDate, days);
 
-  const { data: prevPeriodData } = await supabaseAdmin
+  const { count: prevPeriodCount } = await supabaseAdmin
     .from('webhook_logs')
-    .select('id', { count: 'exact', head: true })
+    .select('*', { count: 'exact', head: true })
     .gte('created_at', prevPeriodStart.toISOString())
     .lt('created_at', startDate.toISOString());
 
-  const prevTotal = prevPeriodData || 0;
+  const prevTotal = prevPeriodCount || 0;
   const growthPercentage =
     prevTotal > 0 ? (((totalEnrichments - prevTotal) / prevTotal) * 100).toFixed(1) : '0';
 

@@ -309,7 +309,9 @@ async function handleSubscriptionDeleted(
 async function handleSubscriptionUpdated(
   event: Stripe.Event
 ): Promise<ProcessingResult> {
-  const subscription = event.data.object as Stripe.Subscription;
+  const subscription = event.data.object as Stripe.Subscription & {
+    current_period_end?: number;
+  };
   const previousAttributes = event.data.previous_attributes as any;
 
   try {
@@ -336,14 +338,16 @@ async function handleSubscriptionUpdated(
     const planType = subscription.metadata?.plan_type || user.subscription_plan_type;
 
     // Update user subscription details
+    const periodEnd = subscription.current_period_end
+      ? new Date(subscription.current_period_end * 1000).toISOString()
+      : null;
+
     const { error: updateError } = await supabaseAdmin!
       .from('users')
       .update({
         subscription_status: subscriptionStatus,
         subscription_plan_type: planType,
-        subscription_period_end: new Date(
-          subscription.current_period_end * 1000
-        ).toISOString(),
+        ...(periodEnd && { subscription_period_end: periodEnd }),
       })
       .eq('id', user.id);
 

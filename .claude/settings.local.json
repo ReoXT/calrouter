@@ -16,7 +16,11 @@
       "Bash(npx shadcn@latest add sheet:*)",
       "Bash(npm run dev:*)",
       "Skill(web-design-guidelines)",
-      "Skill(web-design-guidelines:*)"
+      "Skill(web-design-guidelines:*)",
+      "Bash(dir \"C:\\\\Users\\\\DELL\")",
+      "Bash(findstr:*)",
+      "Bash(test:*)",
+      "Bash(npx tsc:*)"
     ]
   }
 }
