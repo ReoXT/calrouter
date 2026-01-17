@@ -4,8 +4,8 @@ import { sendWebhookFailureEmail } from '@/lib/email/notifications';
 
 /**
  * Cron job to check for webhook failures and send email alerts
- * Runs every 6 hours (configured in vercel.json)
- * Note: Vercel Hobby plan has hourly accuracy - exact minute is not guaranteed
+ * Runs daily during the 2 PM UTC hour (configured in vercel.json)
+ * Note: Vercel Free plan has hourly accuracy - exact minute is not guaranteed
  *
  * Edge cases handled:
  * - Duplicate email sends (tracks last notification time)
@@ -16,7 +16,7 @@ import { sendWebhookFailureEmail } from '@/lib/email/notifications';
  * - Email delivery failures (retry with backoff)
  * - Database transaction integrity
  * - Missing user/endpoint data
- * - Variable execution time within the hour (Vercel Hobby limitation)
+ * - Variable execution time within the hour (Vercel Free plan limitation)
  */
 
 // Constants

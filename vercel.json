@@ -6,7 +6,7 @@
     },
     {
       "path": "/api/cron/check-webhook-failures",
-      "schedule": "0 */6 * * *"
+      "schedule": "0 14 * * *"
     }
   ]
 }
